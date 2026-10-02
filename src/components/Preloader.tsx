@@ -9,7 +9,7 @@ import { LogoEscrito } from '@/components/marca';
 import { cambiarFase, fasePreloader, marcarLogoEscrito, suscribir, tareasPendientes } from '@/lib/preloader';
 
 const RETARDO = 0.4; // s con el logo montado pero invisible: absorbe el primer pintado de la máscara
-const MINIMO = 2000 + RETARDO * 1000; // lo que tarda el logo en escribirse
+const MINIMO = 1500 + RETARDO * 1000; // lo que tarda el logo en escribirse (1,3 s) y un respiro
 const MAXIMO = 9000;
 const SALIDA = 0.95; // s
 const curva = [0.65, 0, 0.35, 1] as const;

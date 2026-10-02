@@ -21,7 +21,7 @@ export function Logo({ variante = 'blanco', className }: { variante?: 'color' | 
 // logo, descubiertos por una máscara: un trazo grueso que recorre la línea central de cada letra
 // (logoTrazos.ts). Se escribe en cada carga de página (la cabecera no se desmonta al navegar
 // dentro de la web, así que no se repite al cambiar de ruta). Con reduced-motion, el logo quieto.
-const VELOCIDAD = 820; // unidades del viewBox por segundo (≈1,6 s la palabra entera)
+const VELOCIDAD = 1245; // unidades del viewBox por segundo: 1,3 s el logo entero (02/10; antes 820, 1,8 s)
 const PAUSA = 0.03; // entre trazos, como al levantar el lápiz
 const INICIO = 0.2;
 // `retardo` (s): espera antes de empezar, con todo invisible (preloader: deja pasar el primer
