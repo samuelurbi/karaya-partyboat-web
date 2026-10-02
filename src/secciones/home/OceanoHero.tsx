@@ -82,7 +82,7 @@ export function OceanoHero() {
     function preferencias() {
       if (media.matches) { entrada = 1; scrollSuave = 0; }
       sincronizar();
-      if (!media.matches && !escena && !fallida && gpuSuficiente()) void iniciar();
+      if (!media.matches && !escena && !fallida) void iniciar();
     }
     function puntero(e: PointerEvent) {
       if (!fino.matches || media.matches || canvas.clientWidth < 768) return;
@@ -111,6 +111,13 @@ export function OceanoHero() {
         // No compite con la escritura del logo del preloader (ver lib/preloader · logoEscrito).
         await logoEscrito();
         if (abort.signal.aborted) return;
+        // Sin GPU (WebGL por software) se queda la imagen fija. Se comprueba aquí y no al montar:
+        // probar WebGL cuesta CPU y no debe sumarse al arranque de la página.
+        await new Promise<void>((r) => ('requestIdleCallback' in window ? requestIdleCallback(() => r(), { timeout: 600 }) : setTimeout(r, 0)));
+        if (!gpuSuficiente()) {
+          fallida = true; setEstado('estatico'); avisarLlegada(); escenaLista();
+          return;
+        }
         const { crearEscena } = await import('./oceano/escena.js');
         if (abort.signal.aborted) return;
         escena = await crearEscena(canvas, abort.signal);
@@ -136,8 +143,8 @@ export function OceanoHero() {
         escenaLista();
       } finally { cargando = false; }
     }
-    // Movimiento reducido o sin GPU (WebGL por software): la imagen fija, sin escena.
-    if (media.matches || !gpuSuficiente()) { setEstado('estatico'); avisarLlegada(); escenaLista(); }
+    // Movimiento reducido: la imagen fija, sin escena (sin GPU, lo decide iniciar()).
+    if (media.matches) { setEstado('estatico'); avisarLlegada(); escenaLista(); }
     else void iniciar();
 
     return () => {
