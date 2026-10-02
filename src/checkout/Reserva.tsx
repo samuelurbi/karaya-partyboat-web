@@ -47,6 +47,13 @@ const ocasionesPrivado = {
   ],
 };
 
+// Nombre corto de cada evento para las pestañas del checkout en móvil.
+const nombreCorto: Record<string, { en: string; es: string }> = {
+  'private-events': { en: 'Private', es: 'Privado' },
+  weddings: { en: 'Weddings', es: 'Bodas' },
+  corporate: { en: 'Corporate', es: 'Corporativo' },
+};
+
 const ocasionPorEn = (id: IdProducto, en: string) => (ocasionesPrivado as Record<string, { en: string; es: string }[]>)[id]?.find((o) => o.en === en) ?? { en, es: en };
 
 const reEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -424,10 +431,13 @@ function PasoFechaPrivado({ id, datos, cambiar }: { id: IdProducto; datos: Datos
   return (
     <div className="space-y-4">
       <section className="rounded-[24px] bg-[linear-gradient(170deg,rgb(var(--ky-texto)/0.07),rgb(var(--ky-texto)/0.02))] p-5 ring-1 ring-texto/10 md:p-8">
-        <div role="tablist" aria-label={t(tx.tipoEvento)} className="-mx-1 mb-6 flex gap-1 overflow-x-auto rounded-full bg-noche/40 p-1 [scrollbar-width:none] md:mx-0 md:inline-flex">
+        {/* Móvil: tres columnas iguales con el nombre corto, todo a la vista sin deslizar (02/10).
+            Escritorio: la píldora con el nombre completo. */}
+        <div role="tablist" aria-label={t(tx.tipoEvento)} className="mb-6 grid grid-cols-3 gap-1 rounded-full bg-noche/40 p-1 md:inline-flex">
           {(['private-events', 'weddings', 'corporate'] as IdProducto[]).map((pid) => (
-            <button key={pid} type="button" role="tab" aria-selected={pid === id} onClick={() => pid !== id && cambiarProducto(pid)} className={clsx('min-h-[44px] shrink-0 whitespace-nowrap rounded-full px-4 text-[14px] font-semibold transition-colors', pid === id ? 'bg-texto text-noche' : 'text-texto/80 hover:text-texto')}>
-              {t(catalogo[pid].nombre)}
+            <button key={pid} type="button" role="tab" aria-selected={pid === id} aria-label={t(catalogo[pid].nombre)} onClick={() => pid !== id && cambiarProducto(pid)} className={clsx('min-h-[44px] min-w-0 whitespace-nowrap rounded-full px-2 text-[14px] font-semibold transition-colors md:px-4', pid === id ? 'bg-texto text-noche' : 'text-texto/80 hover:text-texto')}>
+              <span className="md:hidden">{t(nombreCorto[pid])}</span>
+              <span className="hidden md:inline">{t(catalogo[pid].nombre)}</span>
             </button>
           ))}
         </div>

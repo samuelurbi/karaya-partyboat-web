@@ -18,6 +18,7 @@ import { Zonas } from '@/components/bloques';
 import { home } from '@/data/contenido';
 import { useIdioma } from '@/lib/idioma';
 import { useLuzBorde } from '@/lib/luzBorde';
+import { gpuSuficiente } from '@/lib/gpu';
 import type { PuntoVisor, Visor3D, ZonaVisor } from '@/secciones/barco3d/visor';
 
 type Zona = (typeof home.barco.zonas)[number];
@@ -50,6 +51,8 @@ export function Barco3D() {
 
   useEffect(() => {
     if (!cerca) return;
+    // Sin GPU (WebGL por software) el recorrido 3D va a saltos: la cuadrícula de zonas con foto.
+    if (!gpuSuficiente()) { setEstado('fallo'); return; }
     const abort = new AbortController();
     let raf = 0, visible = true;
     const el = caja.current!;

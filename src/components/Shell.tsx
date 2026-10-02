@@ -346,7 +346,9 @@ function Pie() {
 // Revelado del final (02/10): el cierre y el pie van en una capa POR DEBAJO del contenido (z-index
 // negativo, sin crear un contexto de apilamiento que encierre los fixed de las páginas) y suben más
 // despacio que el scroll; el contenido, opaco, se levanta como una hoja y los va descubriendo.
-// Con reduced-motion, sin desplazamiento.
+// Ajuste (02/10): el desfase es corto (160 px, no un % de cierre + pie, que eran ~500 px) y se
+// completa cuando el cierre llega arriba, no al final de la página: el banner se ve entero antes
+// de pasar bajo la cabecera. Con reduced-motion, sin desplazamiento.
 // Logo de la cabecera (02/10): estático; en la carga inicial lo trae el preloader volando hasta aquí,
 // así que queda oculto (sin ocupar otro sitio) hasta que el preloader termina.
 function LogoCabecera() {
@@ -361,8 +363,8 @@ function LogoCabecera() {
 function Revelado({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const quieto = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] });
-  const y = useTransform(scrollYProgress, [0, 1], ['-38%', '0%']);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'start start'] });
+  const y = useTransform(scrollYProgress, [0, 1], [-160, 0]);
   return (
     <div ref={ref} className="relative -z-10">
       <motion.div style={quieto ? undefined : { y }}>{children}</motion.div>

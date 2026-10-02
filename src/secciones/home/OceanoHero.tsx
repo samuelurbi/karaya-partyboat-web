@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import type { EscenaOceano } from './oceano/escena';
 import { DURACION_LLEGADA } from './oceano/travesia.js';
 import { esperar, fasePreloader, listo, logoEscrito } from '@/lib/preloader';
+import { gpuSuficiente } from '@/lib/gpu';
 import type { ControlPuntos } from './PuntosBarco';
 import './oceano/hero.css';
 
@@ -81,7 +82,7 @@ export function OceanoHero() {
     function preferencias() {
       if (media.matches) { entrada = 1; scrollSuave = 0; }
       sincronizar();
-      if (!media.matches && !escena && !fallida) void iniciar();
+      if (!media.matches && !escena && !fallida && gpuSuficiente()) void iniciar();
     }
     function puntero(e: PointerEvent) {
       if (!fino.matches || media.matches || canvas.clientWidth < 768) return;
@@ -135,7 +136,8 @@ export function OceanoHero() {
         escenaLista();
       } finally { cargando = false; }
     }
-    if (media.matches) { setEstado('estatico'); avisarLlegada(); escenaLista(); }
+    // Movimiento reducido o sin GPU (WebGL por software): la imagen fija, sin escena.
+    if (media.matches || !gpuSuficiente()) { setEstado('estatico'); avisarLlegada(); escenaLista(); }
     else void iniciar();
 
     return () => {

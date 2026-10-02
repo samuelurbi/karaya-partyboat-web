@@ -22,12 +22,17 @@ export const PLANOS = {
 };
 
 export async function crearVisor(canvas, signal) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  // Modo ligero (móvil y táctil, 02/10): el visor iba lento en el teléfono. Sin el reflejo del agua
+  // (Water dibuja la escena dos veces por frame: va un mar simple con ondas), sin los focos de las
+  // luminarias (7 SpotLight que cada material calcula por píxel; quedan los paneles encendidos),
+  // sin sombras, densidad de píxeles ≤ 1,5 sin antialias, 30 fps y la oclusión de puntos cada 0,4 s.
+  const ligero = canvas.clientWidth < 768 || matchMedia('(pointer: coarse)').matches;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !ligero, alpha: true, powerPreference: 'high-performance' });
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.16; // las luminarias y el sol del GLB son muy intensas (como en el hero)
-  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.enabled = !ligero;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
@@ -40,7 +45,7 @@ export async function crearVisor(canvas, signal) {
   scene.add(new THREE.HemisphereLight(0xdfeaff, 0x1b2a48, 9));
   const sol = new THREE.DirectionalLight(0xfff1dc, 20);
   sol.position.set(-30, 40, 22);
-  sol.castShadow = true;
+  sol.castShadow = !ligero;
   sol.shadow.mapSize.set(2048, 2048);
   Object.assign(sol.shadow.camera, { left: -20, right: 20, top: 20, bottom: -20, near: 1, far: 120 });
   sol.shadow.bias = -0.0002;
@@ -65,21 +70,33 @@ export async function crearVisor(canvas, signal) {
   cielo.mapping = THREE.EquirectangularReflectionMapping;
   scene.background = cielo;
 
-  // Mar: mismos ajustes que el hero (escena.js), con resolución de reflejo menor.
+  // Mar: en escritorio, el Water del hero (escena.js) con resolución de reflejo menor; en modo
+  // ligero, un plano con las mismas normales desplazándose (sin segundo render).
   const normales = await new THREE.TextureLoader().loadAsync(new URL('../home/oceano/waternormals.webp', import.meta.url).href);
   signal.throwIfAborted();
   normales.wrapS = normales.wrapT = THREE.RepeatWrapping;
-  const agua = new Water(new THREE.PlaneGeometry(4000, 4000), {
-    textureWidth: 512, textureHeight: 512, waterNormals: normales,
-    sunDirection: new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(84), THREE.MathUtils.degToRad(200)), sunColor: 0xdda892,
-    waterColor: 0x235673, distortionScale: 2.4, alpha: 1,
-  });
+  let agua, moverAgua;
+  if (ligero) {
+    normales.repeat.set(220, 220);
+    agua = new THREE.Mesh(new THREE.CircleGeometry(900, 48), new THREE.MeshStandardMaterial({
+      color: 0x0f3352, roughness: 0.18, metalness: 0, normalMap: normales, normalScale: new THREE.Vector2(0.55, 0.55), envMapIntensity: 0.45,
+    }));
+    moverAgua = (t) => normales.offset.set(t * 0.004, t * 0.0025);
+  } else {
+    agua = new Water(new THREE.PlaneGeometry(4000, 4000), {
+      textureWidth: 512, textureHeight: 512, waterNormals: normales,
+      sunDirection: new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(84), THREE.MathUtils.degToRad(200)), sunColor: 0xdda892,
+      waterColor: 0x235673, distortionScale: 2.4, alpha: 1,
+    });
+    agua.material.uniforms.waterColor.value.multiplyScalar(5);
+    agua.material.uniforms.size.value = 5.5;
+    moverAgua = (t) => { agua.material.uniforms.time.value = t * 0.6; };
+  }
   agua.rotation.x = -Math.PI / 2;
-  agua.material.uniforms.waterColor.value.multiplyScalar(5);
-  agua.material.uniforms.size.value = 5.5;
   scene.add(agua);
 
   const barco = await crearBarco(signal);
+  if (ligero) barco.traverse((o) => { if (o.isSpotLight) o.visible = false; });
   // Giro del usuario: rota el BARCO (no la cámara) sobre la vertical del punto que se mira, así el
   // cielo y el horizonte quedan siempre como se diseñaron. La matriz se compone a mano cada frame.
   const giratorio = new THREE.Group();
@@ -131,13 +148,16 @@ export async function crearVisor(canvas, signal) {
   }
 
   // `orbitar`: en la vista general, giro muy lento del barco (hasta que el usuario lo toca).
+  let ultimoFrame = -1, ultimosPuntos = [];
   function dibujar(ahora, { orbitar = false, inclinacion = 0 } = {}) {
     if (destruido) return [];
+    if (ligero && ahora - ultimoFrame < 1 / 31) return ultimosPuntos;
+    ultimoFrame = ahora;
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return [];
     if (w !== ancho || h !== alto) {
       ancho = w; alto = h;
-      renderer.setPixelRatio(Math.min(devicePixelRatio, w < 768 ? 1.25 : 1.5));
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       // En formatos estrechos el barco no cabe: se abre el campo de visión.
@@ -149,7 +169,7 @@ export async function crearVisor(canvas, signal) {
     actual.mira.lerpVectors(origen.mira, destino.mira, k);
     actual.desde.lerpVectors(origen.desde, destino.desde, k);
     if (orbitar && !tocado && x >= 1) giro += 0.0016;
-    agua.material.uniforms.time.value = ahora * 0.6;
+    moverAgua(ahora);
 
     // Altura: se limita sobre la elevación real de la cámara (por encima del agua, sin cenital).
     const v = actual.desde.clone().sub(actual.mira);
@@ -173,7 +193,7 @@ export async function crearVisor(canvas, signal) {
     giratorio.matrixWorldNeedsUpdate = true;
 
     renderer.render(scene, camera);
-    if (ahora - ultimaOclusion > 0.15) {
+    if (ahora - ultimaOclusion > (ligero ? 0.4 : 0.15)) {
       ultimaOclusion = ahora;
       giratorio.updateMatrixWorld(true);
       for (const [zona, a] of Object.entries(anclas)) {
@@ -186,10 +206,11 @@ export async function crearVisor(canvas, signal) {
         tapados[zona] = !!golpe && golpe.distance < distancia - 0.7;
       }
     }
-    return Object.entries(anclas).map(([zona, a]) => {
+    ultimosPuntos = Object.entries(anclas).map(([zona, a]) => {
       proyectado.copy(a).applyMatrix4(giratorio.matrix).project(camera);
       return { zona, x: (proyectado.x * 0.5 + 0.5) * w, y: (-proyectado.y * 0.5 + 0.5) * h, visible: !tapados[zona] && proyectado.z < 1 && Math.abs(proyectado.x) < 0.95 && Math.abs(proyectado.y) < 0.92 };
     });
+    return ultimosPuntos;
   }
 
   function destruir() {
