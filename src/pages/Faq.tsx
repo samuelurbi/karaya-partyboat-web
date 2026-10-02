@@ -21,6 +21,8 @@ export function Faq() {
 
   useEffect(() => {
     const confirmadas = faq.grupos.flatMap((g) => g.preguntas).filter((p) => !p.pendiente);
+    // El HTML estático (scripts/prerender.mjs) ya trae este schema: se sustituye, no se duplica.
+    document.querySelectorAll('script[data-schema="faq"]').forEach((n) => n.remove());
     const s = document.createElement('script');
     s.type = 'application/ld+json';
     s.dataset.schema = 'faq';

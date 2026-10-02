@@ -40,7 +40,7 @@ export function H02Cinta() {
   return (
     // Recorte SOLO horizontal (overflow-x: clip): los extremos inclinados de las cintas suben o
     // bajan ~40 px y no deben cortarse; z-20 para pintarse sobre el hero y el venue.
-    <div className="relative z-20 -my-4 overflow-x-clip py-12 md:-my-6 md:py-16" aria-label={[...home.cinta, ...home.cinta2].map((c) => t(c)).join(' · ')}>
+    <div role="group" className="relative z-20 -my-4 overflow-x-clip py-12 md:-my-6 md:py-16" aria-label={[...home.cinta, ...home.cinta2].map((c) => t(c)).join(' · ')}>
       <Tira items={home.cinta2} inversa className="absolute left-0 top-1/2 -translate-y-1/2 rotate-[3deg] bg-mar-hondo text-texto" punto="bg-sol" />
       <Tira items={home.cinta} className="-rotate-[2deg] bg-sol text-noche" punto="bg-mar-hondo" />
     </div>
@@ -78,7 +78,7 @@ function TarjetaCifra({ d, etiqueta }: { d: (typeof home.datos)[number]; etiquet
   const quieto = useReducedMotion();
   const rx = useSpring(0, { stiffness: 180, damping: 18 });
   const ry = useSpring(0, { stiffness: 180, damping: 18 });
-  const mover = (e: React.PointerEvent<HTMLDivElement>) => {
+  const mover = (e: React.PointerEvent<HTMLLIElement>) => {
     if (quieto || e.pointerType !== 'mouse') return;
     const r = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
@@ -91,7 +91,7 @@ function TarjetaCifra({ d, etiqueta }: { d: (typeof home.datos)[number]; etiquet
     ry.set(0);
   };
   return (
-    <motion.div
+    <motion.li
       variants={entradaTarjeta}
       onPointerMove={mover}
       onPointerLeave={salir}
@@ -100,11 +100,10 @@ function TarjetaCifra({ d, etiqueta }: { d: (typeof home.datos)[number]; etiquet
     >
       {/* Logo pequeño en blanco, arriba a la izquierda (01/10). */}
       <Logo className="absolute left-5 top-5 z-20 w-[54px] opacity-90 md:left-7 md:top-6 md:w-[64px]" />
-      <dt className="sr-only">{etiqueta}</dt>
-      <dd className="relative z-10">
+      <p className="relative z-10">
         <Cuenta valor={d.valor} unidad={d.unidad} />
         <span className="mt-1.5 block max-w-[18ch] text-[15px] font-medium text-texto/90 md:text-[16px]">{etiqueta}</span>
-      </dd>
+      </p>
       {/* Resplandor cálido que se enciende al pasar */}
       <span aria-hidden className="pointer-events-none absolute -right-[30%] -top-[25%] -z-10 h-[80%] w-[110%] rounded-full bg-[radial-gradient(circle,rgb(var(--ky-sol)/0.28),transparent_65%)] opacity-50 transition-opacity duration-500 group-hover:opacity-100" />
       <img
@@ -115,13 +114,13 @@ function TarjetaCifra({ d, etiqueta }: { d: (typeof home.datos)[number]; etiquet
         decoding="async"
         className="pointer-events-none absolute -right-[20%] -top-[14%] w-[76%] select-none drop-shadow-[0_24px_30px_rgb(0_0_0/0.45)] transition-transform duration-700 ease-suave group-hover:-translate-x-3 group-hover:translate-y-2 group-hover:rotate-[-5deg] group-hover:scale-[1.06] motion-reduce:transition-none md:-right-[18%] md:-top-[12%] md:w-[84%]"
       />
-    </motion.div>
+    </motion.li>
   );
 }
 
 export function H03Venue() {
   const { t } = useIdioma();
-  const luz = useLuzBorde<HTMLDListElement>();
+  const luz = useLuzBorde<HTMLUListElement>();
   return (
     <section id="venue" className="relative overflow-hidden">
       <Mural nombre="borde-venue-izquierda" ancho={675} alto={900} clase="left-0 top-[30%] hidden w-[18%] max-w-[290px] md:block" />
@@ -140,11 +139,12 @@ export function H03Venue() {
             OBJETO recortado (PNG transparente, Codex) arriba a la derecha, cortado por el borde (prueba 01/10); al pasar
             el ratón el objeto sube, gira un poco y crece, con un resplandor cálido detrás.
             Escritorio: cuatro columnas iguales. Móvil: 2 × 2. */}
-        <motion.dl ref={luz} variants={escalonado(0.1)} {...enVista} className="mt-12 grid grid-cols-2 gap-3 md:mt-16 md:grid-cols-4 md:gap-4">
+        {/* Lista (no <dl>): cada tarjeta lleva logo e imagen decorativa, que un <dl> no admite. */}
+        <motion.ul ref={luz} variants={escalonado(0.1)} {...enVista} className="mt-12 grid grid-cols-2 gap-3 md:mt-16 md:grid-cols-4 md:gap-4">
           {home.datos.map((d, i) => (
             <TarjetaCifra key={i} d={d} etiqueta={t(d.etiqueta)} />
           ))}
-        </motion.dl>
+        </motion.ul>
       </div>
     </section>
   );

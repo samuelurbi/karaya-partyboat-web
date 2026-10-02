@@ -6,6 +6,7 @@ import { MotionConfig } from 'framer-motion';
 import { IdiomaProvider } from '@/lib/idioma';
 import { Preloader } from '@/components/Preloader';
 import { emitir } from '@/lib/analitica';
+import { HerramientasAgentes } from '@/lib/webmcp';
 import { Home } from '@/pages/Home';
 import { bodas, corporativo, privacidad, privado, terminos } from '@/data/paginas';
 
@@ -38,6 +39,7 @@ export default function App() {
       <IdiomaProvider>
         <BrowserRouter>
           <AlNavegar />
+          <HerramientasAgentes />
           <Preloader />
           <Suspense fallback={<div className="min-h-screen bg-fondo" />}>
           <Routes>

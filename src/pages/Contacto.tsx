@@ -160,6 +160,11 @@ export function Contacto() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   noValidate
+                  // WebMCP declarativo (02/10): los agentes reconocen el formulario como herramienta.
+                  {...{
+                    toolname: 'contact_events_team',
+                    tooldescription: 'Send a message to the Karaya Punta Cana events team: name, email or phone, occasion, preferred date, group size and a message. The team replies by the channel given.',
+                  }}
                   onSubmit={(e) => {
                     e.preventDefault();
                     enviar();
@@ -167,8 +172,8 @@ export function Contacto() {
                 >
                   <h2 className="text-[30px] md:text-[40px]">{t(f.titulo)}</h2>
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                    <Campo etiqueta={t(f.nombre)} autoComplete="name" value={datos.nombre} onChange={(e) => cambiar('nombre', e.target.value)} onBlur={() => setTocados((x) => ({ ...x, nombre: true }))} error={ver('nombre')} />
-                    <Campo etiqueta={t(f.contacto)} autoComplete="email" value={datos.contacto} onChange={(e) => cambiar('contacto', e.target.value)} onBlur={() => setTocados((x) => ({ ...x, contacto: true }))} error={ver('contacto')} />
+                    <Campo etiqueta={t(f.nombre)} name="name" autoComplete="name" value={datos.nombre} onChange={(e) => cambiar('nombre', e.target.value)} onBlur={() => setTocados((x) => ({ ...x, nombre: true }))} error={ver('nombre')} />
+                    <Campo etiqueta={t(f.contacto)} name="contact" autoComplete="email" value={datos.contacto} onChange={(e) => cambiar('contacto', e.target.value)} onBlur={() => setTocados((x) => ({ ...x, contacto: true }))} error={ver('contacto')} />
                     <div className="sm:col-span-2">
                       <label htmlFor={idOcasion} className="mb-1.5 block text-[14px] font-semibold">
                         {t(f.ocasion)}
@@ -176,6 +181,7 @@ export function Contacto() {
                       <div className="relative">
                         <select
                           id={idOcasion}
+                          name="occasion"
                           value={datos.ocasion}
                           onChange={(e) => cambiar('ocasion', e.target.value)}
                           onBlur={() => setTocados((x) => ({ ...x, ocasion: true }))}
@@ -197,13 +203,13 @@ export function Contacto() {
                         </p>
                       ) : null}
                     </div>
-                    <Campo etiqueta={t(f.fecha)} type="date" value={datos.fecha} onChange={(e) => cambiar('fecha', e.target.value)} />
-                    <Campo etiqueta={t(f.grupo)} type="number" inputMode="numeric" min={1} value={datos.grupo} onChange={(e) => cambiar('grupo', e.target.value)} />
+                    <Campo etiqueta={t(f.fecha)} name="date" type="date" value={datos.fecha} onChange={(e) => cambiar('fecha', e.target.value)} />
+                    <Campo etiqueta={t(f.grupo)} name="guests" type="number" inputMode="numeric" min={1} value={datos.grupo} onChange={(e) => cambiar('grupo', e.target.value)} />
                     <div className="sm:col-span-2">
                       <label htmlFor={idMensaje} className="mb-1.5 block text-[14px] font-semibold">
                         {t(f.mensaje)}
                       </label>
-                      <textarea id={idMensaje} rows={4} value={datos.mensaje} onChange={(e) => cambiar('mensaje', e.target.value)} className="w-full rounded-lg border-2 border-texto/15 bg-fondo-2 px-4 py-3 text-[16px] outline-none hover:border-texto/35 focus:border-mar" />
+                      <textarea id={idMensaje} name="message" rows={4} value={datos.mensaje} onChange={(e) => cambiar('mensaje', e.target.value)} className="w-full rounded-lg border-2 border-texto/15 bg-fondo-2 px-4 py-3 text-[16px] outline-none hover:border-texto/35 focus:border-mar" />
                     </div>
                   </div>
                   <div className="mt-6 flex flex-wrap items-center gap-4">

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /book/confirmation
+
+Sitemap: https://karayapartyboat.com/sitemap.xml
