@@ -1,0 +1,285 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Tipografía ──────────────────────────────────────────────────────────────
+   Las fuentes del cliente (manual de Karaya; licencias del cliente, 01/10): Gilroy en toda la
+   web, de 400 a 700 (Medium para titulares, Medium Italic para el acento amarillo). Solo se
+   descargan los pesos que se usan. */
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-medium-italic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/gilroy-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+/* ─── Tokens (manual de Karaya, sept. 2026) · TEMA OSCURO desde el 30/09 ──────
+   «Azul de noche, luz de fiesta» (docs/08): marino derivado del Tech Blue (matiz 222°,
+   más azul y saturado que el #0B2545 de Hispaniola y lejos del casi negro de Traffic
+   Light), el amarillo del manual como luz y único acento de compra, el Tech Blue como
+   brillo. Contrastes medidos sobre `fondo` #061A4A:
+   - texto #F5F7FC 15,6:1 · texto-2 #C2CDE6 10,5:1 · texto-3 #93A4C9 6,7:1
+   - sol #F8D011 11,2:1 (vale para texto) · mar-texto #6FA8FF 7,0:1
+   - mar #2279FB 4,1:1 → solo brillo, iconos y display ≥ 24 px
+   - noche #020B24: texto SOBRE amarillo o sobre blanco (13:1). */
+:root {
+  --ky-fondo: 6 26 74;
+  --ky-fondo-2: 11 37 96;
+  --ky-fondo-3: 17 46 114;
+  --ky-hondo: 4 17 47;
+  --ky-noche: 2 11 36;
+  --ky-texto: 245 247 252;
+  --ky-texto-2: 194 205 230;
+  --ky-texto-3: 147 164 201;
+  --ky-sol: 248 208 17;
+  --ky-sol-hondo: 255 222 77;
+  --ky-sol-claro: 255 246 204;
+  --ky-mar: 34 121 251;
+  --ky-mar-texto: 111 168 255;
+  --ky-mar-hondo: 20 89 199;
+  /* Código de colores de Traffic Light Party: información, no decoración (siempre con texto). */
+  --ky-rojo: 239 68 56;
+  --ky-verde: 34 177 104;
+  --ky-aviso: 248 208 17;
+  --ky-error: 255 128 112;
+
+  /* La forma del manual: un cuadrado con UNA esquina muy curva (arriba a la derecha). */
+  --ky-hoja: clamp(40px, 9vw, 140px);
+  --ky-cabecera: 72px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+    scroll-padding-top: calc(var(--ky-cabecera) + 8px);
+  }
+  body {
+    @apply bg-fondo font-sans text-texto antialiased;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  @media (min-width: 900px) {
+    body { font-size: 17px; }
+  }
+  h1, h2, h3, .display {
+    @apply font-display;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 3px solid rgb(var(--ky-mar));
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  ::selection { background: rgb(var(--ky-sol)); color: rgb(var(--ky-noche)); }
+}
+
+@layer components {
+  .contenedor { @apply mx-auto w-full max-w-contenedor px-4 sm:px-6 md:px-10; }
+
+  /* Forma «hoja»: la esquina curva del manual. Variantes por esquina para componer. */
+  .hoja { border-radius: 10px var(--ky-hoja) 10px 10px; }
+  .hoja-sm { border-radius: 8px 28px 8px 8px; }
+
+
+  /* Pistas horizontales en móvil: arrancan en el margen, sangran por la derecha
+     hasta el borde y terminan en el margen (regla de los wireframes). */
+  .pista {
+    @apply -mr-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 pr-4 sm:-mr-6 sm:pr-6;
+    scrollbar-width: none;
+    scroll-padding-left: 16px;
+  }
+  .pista::-webkit-scrollbar { display: none; }
+  .pista > * { @apply shrink-0 snap-start; }
+
+  /* Cinta de datos: se mueve despacio, se para al pasar el ratón, quieta con reduced-motion. */
+  .cinta { animation: cinta 38s linear infinite; }
+  .cinta:hover { animation-play-state: paused; }
+}
+
+/* Palabra de acento en titulares: Gilroy Medium Italic (del cliente) en amarillo. */
+.acento {
+  font-style: italic;
+  color: rgb(var(--ky-sol));
+  padding-right: 0.06em;
+}
+/* Sobre fondo claro el amarillo no se lee: el acento pasa al azul de marca (titular grande, ≥ 3:1). */
+.acento-mar .acento { color: rgb(var(--ky-mar)); }
+/* Logo que se escribe (LogoEscrito): cada trazo de la máscara se dibuja con dashoffset y el
+   isotipo entra antes, con un pequeño giro. `both` deja cada trazo oculto hasta su turno. */
+.logo-trazo {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 13;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation-name: logo-escribir;
+  animation-timing-function: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  animation-fill-mode: both;
+}
+@keyframes logo-escribir {
+  to { stroke-dashoffset: 0; }
+}
+.logo-isotipo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: logo-isotipo 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes logo-isotipo {
+  from { opacity: 0; transform: scale(0.6) rotate(-25deg); }
+}
+
+/* Vidrio (de Traffic Light): superficie translúcida con desenfoque, filo claro y brillo arriba.
+   Para controles que flotan sobre la foto del hero (selector de idioma, menú, botón). */
+.vidrio {
+  background-color: rgb(var(--ky-texto) / 0.06);
+  background-image: linear-gradient(to bottom, rgb(var(--ky-texto) / 0.1), rgb(var(--ky-texto) / 0.02));
+  border: 1px solid rgb(var(--ky-texto) / 0.22);
+  box-shadow: inset 0 1px 0 rgb(var(--ky-texto) / 0.16);
+  backdrop-filter: blur(14px) saturate(1.35);
+  -webkit-backdrop-filter: blur(14px) saturate(1.35);
+}
+
+/* Fondo de la cabecera (iteración del 30/09): desenfoque que SE DIFUMINA hacia abajo, sin
+   corte. Dos capas de backdrop-filter con máscaras de rampa larga y curva suave (muchas paradas,
+   ease-out) y un velo marino con la misma curva. Siempre presente; sobre el hero de la portada,
+   más ligero hasta que se hace scroll (`--suave`). */
+.cabecera-fondo { position: absolute; inset: 0 0 auto; z-index: -1; height: 250%; pointer-events: none; }
+.cabecera-fondo::after, .cabecera-fondo > span { position: absolute; inset: 0; transition: opacity 0.4s ease; }
+.cabecera-fondo > span:nth-child(1) {
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 1) 0%, rgb(0 0 0 / 1) 30%, rgb(0 0 0 / 0.94) 40%, rgb(0 0 0 / 0.82) 50%, rgb(0 0 0 / 0.64) 60%, rgb(0 0 0 / 0.44) 70%, rgb(0 0 0 / 0.26) 80%, rgb(0 0 0 / 0.12) 88%, rgb(0 0 0 / 0.04) 95%, rgb(0 0 0 / 0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0 / 1) 0%, rgb(0 0 0 / 1) 30%, rgb(0 0 0 / 0.94) 40%, rgb(0 0 0 / 0.82) 50%, rgb(0 0 0 / 0.64) 60%, rgb(0 0 0 / 0.44) 70%, rgb(0 0 0 / 0.26) 80%, rgb(0 0 0 / 0.12) 88%, rgb(0 0 0 / 0.04) 95%, rgb(0 0 0 / 0) 100%);
+}
+.cabecera-fondo > span:nth-child(2) {
+  backdrop-filter: blur(18px) saturate(1.2); -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 1) 0%, rgb(0 0 0 / 1) 20%, rgb(0 0 0 / 0.9) 30%, rgb(0 0 0 / 0.66) 42%, rgb(0 0 0 / 0.4) 55%, rgb(0 0 0 / 0.18) 68%, rgb(0 0 0 / 0.05) 80%, rgb(0 0 0 / 0) 90%);
+  -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0 / 1) 0%, rgb(0 0 0 / 1) 20%, rgb(0 0 0 / 0.9) 30%, rgb(0 0 0 / 0.66) 42%, rgb(0 0 0 / 0.4) 55%, rgb(0 0 0 / 0.18) 68%, rgb(0 0 0 / 0.05) 80%, rgb(0 0 0 / 0) 90%);
+}
+.cabecera-fondo::after { content: ''; background: linear-gradient(to bottom, rgb(var(--ky-fondo) / 0.82) 0%, rgb(var(--ky-fondo) / 0.82) 30%, rgb(var(--ky-fondo) / 0.771) 40%, rgb(var(--ky-fondo) / 0.672) 50%, rgb(var(--ky-fondo) / 0.525) 60%, rgb(var(--ky-fondo) / 0.361) 70%, rgb(var(--ky-fondo) / 0.213) 80%, rgb(var(--ky-fondo) / 0.098) 88%, rgb(var(--ky-fondo) / 0.033) 95%, rgb(var(--ky-fondo) / 0.0) 100%); }
+.cabecera-fondo--oculto::after, .cabecera-fondo--oculto > span { opacity: 0; }
+
+/* La cinta azul del banderín corre al revés. */
+.cinta-inversa { animation: cinta-inversa 44s linear infinite; }
+@keyframes cinta-inversa { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+/* Grano (30/09, referencia «SOLA»): ruido fino sobre TODA la página, fijo, que no captura
+   clics. SVG feTurbulence en data URI (0 peticiones, ~0,5 KB), motas claras y oscuras en gris a
+   opacidad baja (se ve igual sobre cualquier fondo; con overlay no se notaba en el marino). */
+.grano {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* Sombras de hojas: se mecen con brisa (ritmo propio por variante). */
+.sombra-palma {
+  /* Brisa: balanceo corto y más vivo; duración y retardo varían por instancia (--brisa-d). */
+  animation: brisa var(--brisa-d, 3.6s) ease-in-out var(--brisa-r, 0s) infinite alternate;
+  transform-origin: var(--brisa-o, top left);
+  /* Nace y muere difuminada: sin corte contra el borde superior de la sección ni abajo. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgb(0 0 0 / 0.35) 8%, #000 25%, #000 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgb(0 0 0 / 0.35) 8%, #000 25%, #000 80%, transparent 100%);
+}
+@keyframes brisa {
+  0% { transform: rotate(-1.4deg) translate(0, 0) skewX(0deg); }
+  35% { transform: rotate(0.6deg) translate(10px, 3px) skewX(0.8deg); }
+  65% { transform: rotate(-0.4deg) translate(4px, -2px) skewX(-0.5deg); }
+  100% { transform: rotate(1.6deg) translate(14px, 4px) skewX(1deg); }
+}
+
+
+/* Luz de borde que sigue al ratón (01/10): un degradado radial centrado en el cursor, recortado
+   con máscara para que SOLO se vea en el borde de la tarjeta. Las coordenadas (--mx/--my) las pone
+   JS en cada tarjeta, así las vecinas también se encienden donde el cursor está cerca. */
+.borde-luz::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  border-radius: inherit;
+  padding: 2px;
+  pointer-events: none;
+  opacity: var(--luz, 0);
+  transition: opacity 0.35s ease;
+  background: radial-gradient(300px circle at var(--mx, -999px) var(--my, -999px), rgb(var(--ky-sol)), rgb(var(--ky-sol) / 0.45) 35%, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+
+/* Variante de 1 px (panel de pasos): la luz va ENCIMA del borde real de 1 px (inset -1px), así que
+   borde y luz son un solo trazo. Las divisiones internas (.luz-cursor) se encienden con la misma luz. */
+.borde-luz-fino::before { inset: -1px; padding: 1px; }
+.luz-cursor::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--luz, 0);
+  transition: opacity 0.35s ease;
+  background: radial-gradient(300px circle at var(--mx, -999px) var(--my, -999px), rgb(var(--ky-sol)), rgb(var(--ky-sol) / 0.45) 35%, transparent 70%);
+}
+
+/* Sección del barco (H06): en escritorio la foto queda FIJA detrás y las secciones vecinas pasan por
+   encima. El clip-path de la sección recorta la capa fija (no crea bloque contenedor, así que el
+   fixed sigue siendo respecto a la pantalla). Móvil y reduced-motion: foto normal. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .barco-profundo { height: 100svh; min-height: 640px; clip-path: inset(0); }
+  .barco-profundo > .barco-foto { position: fixed; inset: 0; height: auto; }
+}
+
+/* Puntos del recorrido 3D del barco (Barco3D): ocultos cuando su zona queda fuera de cuadro. */
+.punto-visor[data-visible="false"] { opacity: 0; pointer-events: none; }
+
+
+@keyframes cinta {
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .cinta, .cinta-inversa, .sombra-palma { animation: none; }
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Karaya Punta Cana | Largest Floating Event Venue in the Caribbean</title>
+    <meta name="description" content="A 938 m² catamaran venue in Punta Cana for private parties, celebrations and groups. Up to 300 guests. Thursdays: Traffic Light Party, US$89 per person." />
+    <meta name="theme-color" content="#061A4A" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Fondo marino desde el primer instante (02/10): sin él, el navegador pinta blanco mientras
+         carga el CSS y el JS, y se veía un parpadeo antes del preloader. -->
+    <style>html,body{background:#061A4A;color-scheme:dark}</style>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Karaya Punta Cana" />
+    <meta property="og:title" content="Karaya · Floating event venue in Punta Cana" />
+    <meta property="og:description" content="938 m², two decks, up to 300 guests. Private, and it moves." />
+    <meta property="og:image" content="/img/karaya-punta-cana-aerial-venue-full.webp" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="es_DO" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Gilroy Medium (del cliente) para los titulares; se precarga porque pinta el H1. -->
+    <link rel="preload" href="/fonts/gilroy-medium.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/gilroy-regular.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- GTM: el ID lo pone el cliente (o Derick) al publicar. Los eventos ya van al dataLayer. -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

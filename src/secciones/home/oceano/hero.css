@@ -1,0 +1,69 @@
+/* Fondo 3D y alternativa estática de la misma escena; no altera la rejilla del home. */
+.oceano-hero { background: center / cover no-repeat url('/img/oceano-3d/escritorio.jpg'), linear-gradient(#73a9bd 0%, #a8c4cd 23%, #075976 24%, #063151 100%); }
+.oceano-hero canvas { display: block; opacity: 0; }
+.oceano-hero[data-estado="listo"] canvas { opacity: 1; }
+@media (max-width: 767px) { .oceano-hero { background-image: url('/img/oceano-3d/movil.jpg'); } }
+/* Movimiento reducido: la escena no arranca y queda fija en el atardecer. */
+@media (prefers-reduced-motion: reduce) {
+  .oceano-hero { background-image: url('/img/oceano-3d/escritorio-atardecer.jpg'); }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+  .oceano-hero { background-image: url('/img/oceano-3d/movil-atardecer.jpg'); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .oceano-hero[data-estado="cargando"][data-entrada="si"] { background-image: url('/img/oceano-3d/escritorio-llegada.jpg'); }
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .oceano-hero[data-estado="cargando"][data-entrada="si"] { background-image: url('/img/oceano-3d/movil-llegada.jpg'); }
+}
+
+/* Los botones HTML siguen la proyección 3D, sin renderizar React cada fotograma. */
+.puntos-barco { position:absolute; inset:0; z-index:21; pointer-events:none; }
+.punto-barco { position:absolute; left:0; top:0; width:44px; height:44px; display:grid; place-items:center; pointer-events:none; visibility:hidden; opacity:0; border:0; border-radius:50%; background:transparent; cursor:pointer; transition:opacity 180ms ease,visibility 0s 180ms; }
+.punto-barco[data-visible="true"] { visibility:visible; opacity:1; pointer-events:auto; transition:opacity 450ms cubic-bezier(.23,1,.32,1) var(--entrada-punto,0ms),visibility 0s; }
+.punto-barco-iman { position:relative; display:grid; place-items:center; width:36px; height:36px; scale:.86; pointer-events:none; transition:transform 180ms cubic-bezier(.23,1,.32,1),scale 180ms ease; }
+.punto-barco[data-visible="true"] .punto-barco-iman { scale:1; transition:transform 180ms cubic-bezier(.23,1,.32,1),scale 450ms cubic-bezier(.23,1,.32,1) var(--entrada-punto,0ms); }
+.punto-barco-circulo { position:relative; display:grid; place-items:center; width:36px; height:36px; border:1.5px solid #fff; border-radius:50%; color:#17233b; }
+.punto-barco-circulo::before { content:''; position:absolute; inset:0; border-radius:50%; background:#fff; transform:scale(.16); transition:transform 220ms cubic-bezier(.23,1,.32,1); }
+.punto-barco-circulo svg { position:relative; opacity:0; transform:scale(.7); transition:opacity 150ms ease,transform 220ms cubic-bezier(.23,1,.32,1); }
+.punto-barco-pulso { position:absolute; inset:0; border:1px solid #fff; border-radius:50%; opacity:0; animation:pulso-punto-barco 2.8s ease-out infinite; }
+.punto-barco-pulso-segundo { animation-delay:.55s; }
+@keyframes pulso-punto-barco {
+  0%,12% { transform:scale(1); opacity:.75; }
+  68%,100% { transform:scale(1.65); opacity:0; }
+}
+.punto-barco[data-popup-open] .punto-barco-circulo::before { transform:scale(1); }
+.punto-barco[data-popup-open] .punto-barco-circulo svg { opacity:1; transform:scale(1); }
+.punto-barco[data-popup-open] .punto-barco-pulso { animation:none; opacity:0; }
+.punto-barco:focus-visible { outline:2px solid #fff; outline-offset:5px; }
+/* Pista sobre el primer punto (02/10): píldora blanca encima, que se va al abrir alguno. */
+.punto-barco-etiqueta { position:absolute; bottom:calc(100% + 6px); left:50%; translate:-50% 0; padding:5px 11px; border-radius:999px; background:#fff; color:#10233b; font-size:12px; font-weight:600; line-height:1.2; white-space:nowrap; pointer-events:none; box-shadow:0 4px 18px #020b2440; transition:opacity 300ms ease,translate 300ms cubic-bezier(.23,1,.32,1); }
+.punto-barco-etiqueta::after { content:''; position:absolute; top:100%; left:50%; margin-left:-5px; border:5px solid transparent; border-top-color:#fff; }
+.punto-barco-etiqueta[data-oculta] { opacity:0; translate:-50% 4px; }
+.foto-barco-posicion { z-index:55; }
+.foto-barco { width:320px; max-width:calc(100vw - 32px); padding:8px; overflow:hidden; border:1px solid #ffffff45; border-radius:18px; background:#f7f7f2; color:#10233b; box-shadow:0 16px 60px #020b2459; transform-origin:var(--transform-origin); transition:opacity 180ms cubic-bezier(.23,1,.32,1),transform 180ms cubic-bezier(.23,1,.32,1),translate 180ms cubic-bezier(.23,1,.32,1); }
+.foto-barco[data-starting-style],.foto-barco[data-ending-style] { opacity:0; transform:scale(.96); }
+.foto-barco[data-instant] { transition:none; }
+.foto-barco-imagen { position:relative; height:210px; overflow:hidden; border-radius:10px; background:#b8c4c5; }
+.foto-barco-imagen img { width:100%; height:100%; object-fit:cover; }
+.foto-barco-pie { padding:16px 4px 6px; }
+.foto-barco-pie h2 { margin:0; font-size:21px; line-height:1.2; color:#10233b; }
+.foto-barco-pie p { margin:5px 0 0; font-size:12px; line-height:1.45; color:#475569; }
+.puntos-barco[data-estatico] { inset:130px 24px auto auto; display:flex; gap:8px; }
+.puntos-barco[data-estatico] .punto-barco { position:relative; visibility:visible!important; opacity:1; pointer-events:auto; transform:none!important; }
+.puntos-barco[data-estatico] .punto-barco-iman { scale:1; }
+@media (max-width:767px) {
+  .foto-barco { width:288px; }
+  .foto-barco-imagen { height:178px; }
+  .foto-barco-pie { padding:13px 4px 4px; }
+  .foto-barco-pie h2 { font-size:20px; }
+  .puntos-barco[data-estatico] { top:310px; right:16px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .foto-barco { transition:opacity 150ms ease; translate:none!important; }
+  .foto-barco[data-starting-style],.foto-barco[data-ending-style] { transform:none; }
+  .punto-barco-iman { transform:none!important; scale:1!important; transition:none!important; }
+  .punto-barco[data-visible="true"] { transition:opacity 150ms ease,visibility 0s; }
+  .punto-barco-pulso { animation:none; }
+  .punto-barco-circulo::before,.punto-barco-circulo svg { transition:opacity 150ms ease; }
+}
