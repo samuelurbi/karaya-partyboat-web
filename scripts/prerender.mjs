@@ -64,8 +64,15 @@ function resumen(r) {
   return `<div class="sr-only" data-prerender>${partes.join('')}</div>`;
 }
 
+// CSS en línea (02/10): el <link> bloqueaba el primer pintado (~0,9 s en móvil lento según
+// PageSpeed). Son ~14 KB comprimidos; cada página lo lleva dentro y pinta sin esperar otra petición.
+const enlaceCss = plantilla.match(/<link rel="stylesheet"[^>]*href="([^"]+)"[^>]*>/);
+const conCss = enlaceCss
+  ? plantilla.replace(enlaceCss[0], `<style>${readFileSync('dist' + enlaceCss[1], 'utf8').replace(/<\/style/gi, '<\\/style')}</style>`)
+  : plantilla;
+
 // Quita del head de la plantilla lo que cada ruta redefine.
-const base = plantilla
+const base = conCss
   .replace(/<title>[\s\S]*?<\/title>\s*/, '')
   .replace(/<meta name="description"[^>]*>\s*/, '')
   .replace(/<meta property="og:(title|description|image)"[^>]*>\s*/g, '');
