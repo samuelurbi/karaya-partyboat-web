@@ -166,15 +166,17 @@ export const home = {
     todas: T('See all photos', 'Ver todas las fotos'),
     // Galería tipo Pinterest (02/10): fotos reales, sin etiquetas, cada una con su proporción
     // (`forma`) para que las columnas tengan alturas distintas. Orden pensado para alternar
-    // fiesta, boda, comida, espacio y grupo en cada columna.
+    // fiesta, comida, espacio y grupo en cada columna. 15/10 (MA-84): sin fotos de boda (el beso
+    // y la cena de gala); entran la vista aérea llena y el bufé. Cuando lleguen las fotos nuevas de
+    // cumpleaños, fiestas privadas y corporativo (Joshuard y Cathy) van aquí, en lugar de estas dos.
     mosaico: [
       { f: 'karaya-punta-cana-group-sunset-deck', forma: 'aspect-[3/4]' },
       { f: 'karaya-zona-pista', forma: 'aspect-[4/3]' },
-      { f: 'karaya-galeria-boda', forma: 'aspect-[4/5]' },
+      { f: 'karaya-punta-cana-aerial-venue-full', forma: 'aspect-[4/5]' },
       { f: 'karaya-punta-cana-deck-party-crowd', forma: 'aspect-[3/2]' },
       { f: 'karaya-zona-barra', forma: 'aspect-square' },
       { f: 'karaya-punta-cana-friends-group', forma: 'aspect-[3/4]' },
-      { f: 'karaya-galeria-cena', forma: 'aspect-[3/2]' },
+      { f: 'karaya-punta-cana-buffet-guests', forma: 'aspect-[3/2]' },
       { f: 'karaya-punta-cana-dj-booth', forma: 'aspect-square' },
       { f: 'karaya-punta-cana-drinks-toast', forma: 'aspect-[5/4]' },
       { f: 'karaya-zona-escalera', forma: 'aspect-[4/5]' },
@@ -183,6 +185,45 @@ export const home = {
     ],
   },
   cierre: T('No two events on Karaya look the same, because *no two groups do*.', 'Ningún evento en Karaya se ve igual a otro, porque *ningún grupo lo es*.'),
+};
+
+// ─── Programa de incentivos (MA-84, 15/10) ──────────────────────────────────
+// Del documento del cliente (entrada/2026-10-15-incentivos/): tramos por importe contratado y
+// cuatro beneficios a elegir, en eventos privados y corporativos. Se muestra en la sección de
+// eventos de la portada y en /private-events y /corporate. Las condiciones van completas.
+export const incentivos = {
+  antetitulo: T('Event rewards', 'Incentivos para tu evento'),
+  titular: T('The bigger your event, the more experiences *on us*', 'Cuanto más grande tu evento, más experiencias te *regalamos*'),
+  texto: T(
+    'For private and corporate events: book from US$10,000 and pick free extras to make your celebration even more spectacular.',
+    'Para eventos privados y corporativos: contrata desde US$10.000 y elige experiencias gratis para hacer tu celebración todavía más espectacular.',
+  ),
+  desde: T('From', 'Desde'),
+  tramos: [
+    { importe: T('US$10,000', 'US$10.000'), n: 1, etiqueta: T('free extra', 'beneficio gratis') },
+    { importe: T('US$20,000', 'US$20.000'), n: 2, etiqueta: T('free extras', 'beneficios gratis') },
+    { importe: T('US$30,000', 'US$30.000'), n: 3, etiqueta: T('free extras', 'beneficios gratis') },
+  ],
+  // `foto`: real del proyecto. El Photo Booth 360° aún no tiene foto (la traen Joshuard y Cathy).
+  beneficios: [
+    { id: 'dj' as const, titulo: T('Free DJ', 'DJ gratis'), texto: T('A DJ to keep the party going.', 'Servicio de DJ para amenizar el evento.'), foto: 'karaya-punta-cana-dj-booth' },
+    { id: 'booth' as const, titulo: T('360° Photo Booth', 'Photo Booth 360°'), texto: T('A 360° video experience for your guests.', 'Experiencia de vídeo 360° para tus invitados.'), foto: undefined },
+    { id: 'canapes' as const, titulo: T('Two canapés per guest', 'Dos canapés por persona'), texto: T('Two extra canapés for every guest.', 'Dos canapés adicionales para cada invitado.'), foto: 'karaya-punta-cana-catering-canapes' },
+    { id: 'barra' as const, titulo: T('30 more minutes of open bar', '30 minutos más de open bar'), texto: T('Half an hour more, in the drinks tier you booked.', 'Media hora más de barra libre con tu categoría de bebidas.'), foto: 'karaya-punta-cana-drinks-toast' },
+  ],
+  cta: T('Get a quote', 'Pedir cotización'),
+  // Textos de las versiones B1 (presupuesto deslizable) y B2 (planes).
+  presupuesto: T('Your estimated budget', 'Tu presupuesto estimado'),
+  desbloqueados: T('free extras unlocked', 'beneficios desbloqueados'),
+  aunNo: T('From US$10,000 you start picking free extras.', 'Desde US$10.000 empiezas a elegir beneficios gratis.'),
+  toca: T('Tap to pick yours', 'Toca para elegir los tuyos'),
+  elegidos: T('picked', 'elegidos'),
+  de: T('of', 'de'),
+  eligeDe: T('Pick from the four', 'Elige entre los cuatro'),
+  condiciones: T(
+    'Pick as many extras as your tier allows; each one can be chosen once. Not exchangeable for cash or discounts. Subject to availability and operational confirmation. The eligible amount and applicable taxes are confirmed in your quote.',
+    'Elige tantos beneficios como permita tu tramo; cada uno se puede elegir una sola vez. No canjeables por dinero ni por descuentos. Sujetos a disponibilidad y confirmación operativa. El importe elegible y los impuestos aplicables se confirman en la cotización.',
+  ),
 };
 
 export type Puerta = {
@@ -205,13 +246,15 @@ export const puertas: Puerta[] = [
   { id: 'private-events', titulo: T('Private celebrations', 'Celebraciones privadas'), resumen: T('Birthdays, bachelor and bachelorette parties, anniversaries, friend groups.', 'Cumpleaños, despedidas, aniversarios, grupos de amigos.'), precio: T('From US$95 per person', 'Desde US$95 por persona'), to: '/private-events', foto: 'karaya-punta-cana-friends-group',
     datos: [{ icono: 'personas', texto: T('50–300 guests', '50–300 personas') }, { icono: 'precio', texto: T('From US$95 pp', 'Desde US$95 pp') }],
     boton: { texto: T('Get a quote', 'Pedir cotización'), to: '/book/private-events' } },
+  // 15/10 (MA-84): corporativo antes que bodas (la marca pesa en fiesta; bodas queda como una línea más).
+  // Foto: aérea del venue hasta que lleguen las de eventos corporativos (Joshuard y Cathy).
+  { id: 'corporate', titulo: T('Corporate events', 'Eventos corporativos'), resumen: T('Year-end parties, brand activations and incentive groups.', 'Cierres de año, activaciones de marca y grupos de incentivo.'), precio: T('From US$95 per person', 'Desde US$95 por persona'), to: '/corporate', foto: 'karaya-punta-cana-aerial-venue-coast',
+    datos: [{ icono: 'personas', texto: T('50–300 guests', '50–300 personas') }, { icono: 'precio', texto: T('From US$95 pp', 'Desde US$95 pp') }],
+    boton: { texto: T('Get a quote', 'Pedir cotización'), to: '/book/corporate' } },
   // Foto real de montaje editada por Codex a boda (design-assets/originals/bento/ENCARGO-5): pendiente de Ray.
   { id: 'weddings', titulo: T('Weddings and formal events', 'Bodas y eventos formales'), resumen: T('Ceremony, reception and vow renewals on the water.', 'Ceremonia, recepción y renovación de votos sobre el agua.'), to: '/weddings', foto: 'karaya-boda-recepcion',
     datos: [{ icono: 'personas', texto: T('120 seated · 300 cocktail', '120 sentados · 300 en cóctel') }, { icono: 'precio', texto: T('From US$95 pp', 'Desde US$95 pp') }],
     boton: { texto: T('Get a quote', 'Pedir cotización'), to: '/book/weddings' } },
-  { id: 'corporate', titulo: T('Corporate events', 'Eventos corporativos'), resumen: T('Year-end parties, brand activations.', 'Cierres de año, activaciones de marca.'), precio: T('From US$95 per person', 'Desde US$95 por persona'), to: '/corporate', foto: 'karaya-punta-cana-aerial-venue-coast',
-    datos: [{ icono: 'personas', texto: T('50–300 guests', '50–300 personas') }, { icono: 'precio', texto: T('From US$95 pp', 'Desde US$95 pp') }],
-    boton: { texto: T('Get a quote', 'Pedir cotización'), to: '/book/corporate' } },
   { id: 'traffic-light-party', titulo: T('Traffic Light Party', 'Traffic Light Party'), resumen: T('Three hours on the water. Pick a color, the DJ does the rest.', 'Tres horas sobre el agua. Elige un color, el DJ hace el resto.'), precio: T('US$89 per person', 'US$89 por persona'), to: '/traffic-light-party', foto: 'karaya-punta-cana-deck-party-crowd',
     datos: [{ icono: 'calendario', texto: T('Thu · 3–6 pm', 'Jue · 3–6 p. m.') }, { icono: 'personas', texto: T('Up to 200', 'Hasta 200') }, { icono: 'precio', texto: T('US$89 pp', 'US$89 pp') }],
     // Se compra en su propia web (docs/09): enlace a su checkout.

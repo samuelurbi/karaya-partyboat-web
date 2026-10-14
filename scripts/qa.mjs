@@ -47,10 +47,18 @@ for (const lang of ['en', 'es']) {
       const pesoInicial = bytes;
       const r = await page.evaluate(() => {
         const texto = document.body.innerText;
+        // El bloque de incentivos (MA-84) va aparte: sus importes por tramo y su «30 more minutes of
+        // open bar» salen literalmente del documento del cliente (entrada/2026-10-15-incentivos).
+        const bloque = document.querySelector('#incentivos');
+        const incentivo = bloque ? bloque.innerText : '';
+        if (bloque) bloque.style.display = 'none';
+        const fuera = document.body.innerText;
+        if (bloque) bloque.style.display = '';
         const h1 = [...document.querySelectorAll('h1')].map((x) => x.innerText);
         const wa = [...document.querySelectorAll('a[href*="wa.me"]')].map((a) => a.href);
         const fijosWa = [...document.querySelectorAll('a[href*="wa.me"]')].filter((a) => getComputedStyle(a).position === 'fixed' || a.closest('[class*="fixed"]'));
-        const precios = [...texto.matchAll(/US\$\s?(\d[\d,.]*)/g)].map((m) => m[1]);
+        const precios = [...fuera.matchAll(/US\$\s?(\d[\d,.]*)/g)].map((m) => m[1]);
+        const importes = [...incentivo.matchAll(/US\$\s?(\d[\d,.]*)/g)].map((m) => m[1]);
         const pequenos = [...document.querySelectorAll('a, button, input, select')]
           .filter((el) => {
             const b = el.getBoundingClientRect();
@@ -60,10 +68,14 @@ for (const lang of ['en', 'es']) {
             return b.height < 44 && b.width < 44 ? true : b.height < 40;
           })
           .map((el) => `${el.tagName}:${(el.innerText || el.getAttribute('aria-label') || '').trim().slice(0, 30)} ${Math.round(el.getBoundingClientRect().height)}px`);
-        return { texto, h1, wa, fijosWa: fijosWa.length, precios, notas: document.querySelectorAll('[data-nota]').length, desborde: document.documentElement.scrollWidth - innerWidth, pequenos };
+        return { texto, fuera, incentivo, importes, h1, wa, fijosWa: fijosWa.length, precios, notas: document.querySelectorAll('[data-nota]').length, desborde: document.documentElement.scrollWidth - innerWidth, pequenos };
       });
       ok(!/angurria/i.test(r.texto), `${id}: aparece «Angurria»`);
-      ok(!/open bar|barra abierta|barra libre/i.test(r.texto), `${id}: aparece «open bar»`);
+      ok(!/open bar|barra abierta|barra libre/i.test(r.fuera), `${id}: aparece «open bar»`);
+      // Dentro de los incentivos, «open bar» solo en su beneficio y solo los importes de los tramos
+      // (más los extremos de la escala del deslizador de B1: 0 y 40.000).
+      ok(!/open bar|barra libre/i.test(r.incentivo.replace(/30 more minutes of open bar|30 minutos más de open bar|Media hora más de barra libre/gi, '')), `${id}: «open bar» fuera del beneficio de incentivos`);
+      ok(r.importes.every((p) => ['0', '10000', '20000', '30000', '40000'].includes(p.replace(/[,.]/g, ''))), `${id}: importe no previsto en incentivos: ${r.importes.join(', ')}`);
       ok(r.h1.length === 1, `${id}: ${r.h1.length} H1`);
       ok(!r.h1.some((x) => (ruta === '/weddings' || ruta === '/book/weddings' ? /mice|open bar/i : /mice|wedding|boda|open bar/i).test(x)), `${id}: palabra prohibida en el H1`);
       // Precios: solo 89 y sus múltiplos (total del checkout: 89 × personas).

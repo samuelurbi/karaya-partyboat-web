@@ -9,6 +9,7 @@ import { Mural, SombraPalma } from '@/components/marca';
 import { Acordeon, BarraFija, CierreSol } from '@/components/comunes';
 import { CabeceraSeccion, HeroFoto, Mosaico, PanelCifras, PanelPasos } from '@/components/bloques';
 import { BotonLink } from '@/components/ui';
+import { Incentivos } from '@/components/Incentivos';
 import { cta, home } from '@/data/contenido';
 import { comoFuncionaOcasion, type PaginaOcasion } from '@/data/paginas';
 import { useIdioma } from '@/lib/idioma';
@@ -84,6 +85,15 @@ export function Ocasion({ p }: { p: PaginaOcasion }) {
           <PanelCifras datos={home.datos} />
         </div>
       </section>
+
+      {/* Privado y corporativo: programa de incentivos (MA-84), antes de cómo se pide. */}
+      {p.incentivos ? (
+        <section className="relative overflow-hidden py-10 md:py-14">
+          <div className="contenedor">
+            <Incentivos destino={reserva} origen={origen} nivel="h2" />
+          </div>
+        </section>
+      ) : null}
 
       {/* 04 · Cómo funciona la solicitud */}
       <section id="como-funciona" className="relative scroll-mt-24 py-16 md:py-24" data-evento="click_check_dates">

@@ -9,6 +9,8 @@
 // - hover: la tarjeta sube, la foto hace zoom y el borde se ilumina con la luz que sigue al
 //   cursor (la misma de las cifras);
 // - móvil: carrusel casi a todo el ancho con puntos de paginación;
+// - 15/10 (MA-84): bodas pasa al tercer lugar (más peso a privado y corporativo) y, bajo las
+//   tarjetas, el programa de incentivos (components/Incentivos);
 // - debajo, lo que incluye todo evento privado (kit, docs/09) y una salida para el indeciso
 //   hacia la solicitud (sin WhatsApp: aquí no es lugar de ayuda, regla del proyecto).
 import { useEffect, useRef, useState } from 'react';
@@ -18,6 +20,7 @@ import { clsx } from 'clsx';
 import { Armchair, ArrowRight, ArrowUpRight, CalendarDays, CircleDollarSign, Clock, Sailboat, Users, Waves, Wine } from 'lucide-react';
 import { Acento, Foto } from '@/components/ui';
 import { Mural } from '@/components/marca';
+import { Incentivos } from '@/components/Incentivos';
 import { home, pies, puertas, type Puerta } from '@/data/contenido';
 import { useIdioma } from '@/lib/idioma';
 import { useLuzBorde } from '@/lib/luzBorde';
@@ -135,8 +138,11 @@ export function H04Puertas() {
           ))}
         </div>
 
+        {/* Programa de incentivos (MA-84): justo después de las ocasiones, antes de lo que incluye. */}
+        <Incentivos destino="/book/private-events" origen="home" className="mt-12 md:mt-16" />
+
         {/* Lo que trae todo evento privado + salida para quien no sabe cuál elegir */}
-        <motion.div variants={entradaTarjeta} {...enVista} className="mt-10 rounded-[24px] p-5 ring-1 ring-texto/10 md:mt-12 md:flex md:items-center md:gap-8 md:p-6">
+        <motion.div variants={entradaTarjeta} {...enVista} className="mt-6 rounded-[24px] p-5 ring-1 ring-texto/10 md:mt-12 md:flex md:items-center md:gap-8 md:p-6">
           <p className="text-[13px] font-semibold uppercase tracking-[0.12em] text-texto-2 md:w-[15.5em] md:shrink-0">{t(home.puertas.incluye.titulo)}</p>
           <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-5 md:mt-0 md:flex-1 md:grid-cols-4 md:gap-6">
             {home.puertas.incluye.items.map((it) => {

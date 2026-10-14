@@ -24,6 +24,8 @@ export type PaginaOcasion = {
   preguntas: Pregunta[];
   // Solo bodas: bloque para wedding planners y rango de precio (ejecutivo, diap. 7).
   planners?: { titulo: Texto; texto: Texto; puntos: Texto[] };
+  // Programa de incentivos (MA-84): el documento del cliente lo limita a privados y corporativos.
+  incentivos?: boolean;
 };
 
 const pasosSolicitud = [
@@ -74,6 +76,7 @@ export const privado: PaginaOcasion = {
   // 02/10: galería tipo Pinterest, con las fotos de la galería del cliente.
   ambiente: ['karaya-punta-cana-group-sunset-deck', 'karaya-zona-pista', 'karaya-punta-cana-dj-booth', 'karaya-punta-cana-deck-party-crowd', 'karaya-punta-cana-drinks-toast', 'karaya-zona-cubierta', 'karaya-zona-escalera', 'karaya-punta-cana-buffet-guests'],
   cierre: T('Your group, your hours, the whole venue.', 'Tu grupo, tus horas, el venue entero.'),
+  incentivos: true,
   preguntas: [
     ...preguntasComunes,
     { pregunta: T('Can I book a wedding on Karaya?', '¿Puedo reservar una boda en Karaya?'), respuesta: T('Yes. Ceremony, reception or vow renewal, for up to 120 guests seated or 300 cocktail style. See the weddings page.', 'Sí. Ceremonia, recepción o renovación de votos, para hasta 120 invitados sentados o 300 en cóctel. Mira la página de bodas.') },
@@ -154,6 +157,7 @@ export const corporativo: PaginaOcasion = {
   ambienteTitulo: T('The venue and the menu', 'El venue y el menú'),
   ambiente: ['karaya-punta-cana-aerial-venue-full', 'karaya-galeria-cena', 'karaya-punta-cana-buffet-guests', 'karaya-zona-barra', 'karaya-punta-cana-catering-canapes', 'karaya-punta-cana-catering-tacos', 'karaya-galeria-proa'],
   cierre: T('Take the team *out of the office*.', 'Saca al equipo *de la oficina*.'),
+  incentivos: true,
   preguntas: [
     ...preguntasComunes,
     { pregunta: T('Can you invoice our company?', '¿Pueden facturar a nuestra empresa?'), respuesta: T('Add your company name when you request the date and we confirm the billing details with your quote.', 'Añade el nombre de tu empresa al solicitar la fecha y confirmamos los datos de facturación con tu cotización.'), pendiente: 'Confirmar facturación a empresa con Comercial.' },
@@ -210,17 +214,20 @@ export const galeria = {
   h1: T('Events *on board*', 'Eventos *a bordo*'),
   bajada: T('What 938 m² on the water actually looks like.', 'Así se ven de verdad 938 m² sobre el agua.'),
   intro: T(
-    'A look at the venue itself: the deck, the bar, the art on board, and the Thursday crowd on Traffic Light Party. No two events look the same, but the space is always this big.',
-    'Un vistazo al venue en sí: la cubierta, la barra, el arte a bordo y el ambiente de los jueves en la Traffic Light Party. Ningún evento se ve igual a otro, pero el espacio siempre es este mismo tamaño.',
+    'A look at the venue itself: the deck, the bar, the art on board, the celebrations and the Thursday crowd on Traffic Light Party. No two events look the same, but the space is always this big.',
+    'Un vistazo al venue en sí: la cubierta, la barra, el arte a bordo, las celebraciones y el ambiente de los jueves en la Traffic Light Party. Ningún evento se ve igual a otro, pero el espacio siempre es este mismo tamaño.',
   ),
   // La foto del mural con mesa de gala queda fuera: es lenguaje de boda y lleva texto sobreimpreso.
   categorias: [
     // 02/10: más fotos (galería del cliente) y una categoría de bodas; sin pies, en galería Pinterest.
     { id: 'venue', titulo: T('The venue', 'El venue'), texto: T('Deck, art and bar. Two decks anchored over the reef off Bávaro.', 'Cubierta, arte y barra. Dos niveles anclados sobre el arrecife frente a Bávaro.'), fotos: ['karaya-punta-cana-aerial-venue-top', 'karaya-zona-aerea', 'karaya-punta-cana-aerial-venue-coast', 'karaya-zona-cubierta', 'karaya-punta-cana-aerial-venue-full', 'karaya-zona-murales', 'karaya-punta-cana-boat-from-water', 'karaya-galeria-proa'] },
+    // 15/10 (MA-84): las celebraciones y la fiesta suben; bodas pasa al final y se queda en dos
+    // fotos (antes cuatro). Las fotos nuevas de cumpleaños, fiestas privadas y corporativo
+    // (Joshuard y Cathy) van en «celebraciones»; cuando haya corporativas, categoría propia.
+    { id: 'grupos', titulo: T('Celebrations on deck', 'Celebraciones en cubierta'), texto: T('Birthdays, friend groups, company nights. The deck fills up however your group does.', 'Cumpleaños, grupos de amigos, noches de empresa. La cubierta se llena como se llene tu grupo.'), fotos: ['karaya-punta-cana-friends-group', 'karaya-punta-cana-group-sunset-deck', 'karaya-zona-cubierta', 'karaya-punta-cana-buffet-guests', 'karaya-galeria-cena'] },
     { id: 'fiesta', titulo: T('Traffic Light Party', 'Traffic Light Party'), texto: T('Thursdays on board: the DJ, the deck and the color of the moment.', 'Los jueves a bordo: el DJ, la cubierta y el color del momento.'), fotos: ['karaya-punta-cana-deck-party-crowd', 'karaya-zona-pista', 'karaya-punta-cana-dj-booth', 'karaya-zona-barra', 'karaya-punta-cana-drinks-toast', 'karaya-zona-escalera'] },
-    { id: 'bodas', titulo: T('Weddings', 'Bodas'), texto: T('Ceremonies at the bow, receptions under the ivy.', 'Ceremonias en la proa, recepciones bajo la hiedra.'), fotos: ['karaya-galeria-boda', 'karaya-galeria-cena', 'karaya-punta-cana-banquet-setup', 'karaya-boda-recepcion'] },
-    { id: 'grupos', titulo: T('Groups on deck', 'Grupos en cubierta'), texto: T('Friends, celebrations, the crowd. The deck fills up however your group does.', 'Amigos, celebraciones, el ambiente. La cubierta se llena como se llene tu grupo.'), fotos: ['karaya-punta-cana-friends-group', 'karaya-punta-cana-group-sunset-deck', 'karaya-punta-cana-buffet-guests'] },
     { id: 'menu', titulo: T("What's on the menu", 'Lo que se sirve'), texto: T('Sushi, tacos and canapés, served on board.', 'Sushi, tacos y canapés, servidos a bordo.'), fotos: ['karaya-punta-cana-catering-sushi', 'karaya-punta-cana-catering-tacos', 'karaya-punta-cana-catering-canapes'] },
+    { id: 'bodas', titulo: T('Weddings', 'Bodas'), texto: T('Ceremonies at the bow, receptions on the lower deck.', 'Ceremonias en la proa, recepciones en el nivel inferior.'), fotos: ['karaya-galeria-boda', 'karaya-boda-recepcion'] },
   ],
   cierre: T('Ready to book your date?', '¿Listo para reservar tu fecha?'),
 };
