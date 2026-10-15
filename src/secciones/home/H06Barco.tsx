@@ -12,7 +12,7 @@
 // Reduced-motion: todo quieto.
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { m as motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Acento, BotonLink, Foto } from '@/components/ui';
 import { home, pies } from '@/data/contenido';

@@ -5,7 +5,7 @@
 //  7 · las cifras cuentan de 0 a su valor al entrar en pantalla, dentro de cajas de fondo sutil;
 // «Largest» va SIEMPRE con 938 m² y 350 en el mismo bloque visual (regla del paquete).
 import { useEffect, useRef, useState } from 'react';
-import { animate, motion, useInView, useReducedMotion, useSpring } from 'framer-motion';
+import { animate, m as motion, useInView, useReducedMotion, useSpring } from 'framer-motion';
 import { clsx } from 'clsx';
 import { Acento } from '@/components/ui';
 import { Logo, Mural } from '@/components/marca';

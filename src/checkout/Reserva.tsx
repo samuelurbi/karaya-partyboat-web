@@ -10,12 +10,13 @@
 // El cobro y la disponibilidad reales los conecta Derick en lib/motor/.
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m as motion } from 'framer-motion';
 import { clsx } from 'clsx';
-import { AlertCircle, ArrowLeft, ArrowRight, Check, ChevronDown, Info, Lock, MessageCircle, Plus, Umbrella, CalendarX2, Mail } from 'lucide-react';
+import { AlertCircle, ArrowLeft, ArrowRight, Check, ChevronDown, Info, Lock, MessageCircle, Plus, Umbrella, CalendarX2, Gift, Mail } from 'lucide-react';
 import { Boton } from '@/components/ui';
 import { Contador } from '@/components/Buscador';
 import { catalogo, enlaceFiesta, type IdProducto } from '@/data/catalogo';
+import { incentivos } from '@/data/contenido';
 import { tx } from '@/checkout/textos';
 import { CabeceraCheckout, Calendario, Campo, Pase, Progreso, prefijos } from '@/checkout/piezas';
 import { guardarConfirmacion, useReserva, type Datos } from '@/checkout/estado';
@@ -168,6 +169,7 @@ function Checkout({ id }: { id: IdProducto }) {
         personas: datos.personas,
         horas: datos.horas,
         extras: datos.extras.length ? datos.extras : undefined,
+        incentivo: datos.nivel ? { nivel: datos.nivel, preferidos: datos.preferidos } : undefined,
         ocasion: datos.ocasion || undefined,
         cliente: { nombre: datos.nombre.trim(), apellido: datos.apellido.trim(), email: datos.email.trim(), prefijo: datos.prefijo, telefono: datos.telefono.trim(), empresa: datos.empresa.trim() || undefined },
         aceptaComunicaciones: datos.aceptaComunicaciones,
@@ -184,7 +186,7 @@ function Checkout({ id }: { id: IdProducto }) {
       return;
     }
     const item = { item_id: id, item_name: producto.nombre.en, price: 0, quantity: 1 };
-    emitir('booking_request', { transaction_id: r.referencia, value: 0, currency: 'USD', items: [item] });
+    emitir('booking_request', { transaction_id: r.referencia, value: 0, currency: 'USD', items: [item], ...(datos.nivel ? { tramo: datos.nivel } : {}) });
     guardarConfirmacion({ referencia: r.referencia, estado: r.estado, producto: id, fecha: datos.fecha!, personas: datos.personas, horas: datos.horas, total: null, pagado: null, email: datos.email.trim(), nombre: datos.nombre.trim() });
     limpiar();
     navegar('/book/confirmation', { replace: true });
@@ -474,12 +476,13 @@ function PasoFechaPrivado({ id, datos, cambiar }: { id: IdProducto; datos: Datos
           <div>
             <h2 className="text-[26px] md:text-[32px]">{t(tx.tamanoGrupo)}</h2>
             <div className="mt-4">
-              <Contador id="checkout-grupo" valor={datos.personas} min={p.aforo.min.valor} max={p.aforo.max.valor} onChange={(n) => cambiar('personas', n)} etiqueta={t(tx.personas)} />
+              <Contador id="checkout-grupo" valor={datos.personas} min={1} max={p.aforo.max.valor} onChange={(n) => cambiar('personas', n)} etiqueta={t(tx.personas)} />
             </div>
             <p className="mt-2 text-[14px] text-texto-2">{t(tx.minimo, { n: p.aforo.min.valor })}</p>
           </div>
         </div>
       </section>
+      {datos.nivel ? <Recompensas datos={datos} cambiar={cambiar} /> : null}
       <section className="rounded-[24px] bg-[linear-gradient(170deg,rgb(var(--ky-texto)/0.07),rgb(var(--ky-texto)/0.02))] p-5 ring-1 ring-texto/10 md:p-8">
         <h2 className="text-[26px] md:text-[32px]">{t(tx.extrasTitulo)}</h2>
         <p className="mt-1 text-texto-2">{t(tx.extrasSub)}</p>
@@ -501,6 +504,36 @@ function PasoFechaPrivado({ id, datos, cambiar }: { id: IdProducto; datos: Datos
         </div>
       </section>
     </div>
+  );
+}
+
+// «Event rewards» (15/10, cambio 5 del bloque B2): el tramo que trae el botón de la columna y los
+// cuatro regalos como casillas opcionales, sin marcar. No añade campos obligatorios.
+function Recompensas({ datos, cambiar }: { datos: Datos; cambiar: <K extends keyof Datos>(k: K, v: Datos[K]) => void }) {
+  const { t } = useIdioma();
+  const tramo = incentivos.tramos.find((x) => x.nivel === datos.nivel);
+  if (!tramo) return null;
+  return (
+    <section className="rounded-[24px] p-5 ring-1 ring-sol/40 md:p-8">
+      <p className="flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.12em] text-sol">
+        <Gift size={16} aria-hidden /> {t(incentivos.formulario.titulo)}
+      </p>
+      <p className="mt-2 text-[20px] font-semibold md:text-[22px]">{t(incentivos.formulario.nivel, { importe: t(tramo.importe), n: tramo.n, etiqueta: t(tramo.etiqueta) })}</p>
+      <fieldset className="mt-4">
+        <legend className="text-[15px] text-texto-2">{t(incentivos.formulario.preferidos)}</legend>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          {incentivos.beneficios.map((b) => {
+            const on = datos.preferidos.includes(b.id);
+            return (
+              <label key={b.id} className={clsx('flex min-h-[48px] cursor-pointer items-center gap-3 rounded-[14px] border-2 px-4 text-[15px] font-semibold transition-colors', on ? 'border-sol bg-sol/10' : 'border-texto/12 hover:border-texto/40')}>
+                <input type="checkbox" className="h-5 w-5 accent-[rgb(var(--ky-sol))]" checked={on} onChange={() => cambiar('preferidos', on ? datos.preferidos.filter((x) => x !== b.id) : [...datos.preferidos, b.id])} />
+                {t(b.titulo)}
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+    </section>
   );
 }
 

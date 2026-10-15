@@ -203,6 +203,112 @@ def zonas_barco():
         print('foto', nombre, im.size)
 
 
+# Material que mandó Karaya el 15/10 (respuesta al PDF de material pendiente; carpeta = número de
+# punto). Los originales (hasta 30 MB) no entran en el repo: se leen de la entrada de _miguel y se
+# publican en 1600/800 px. Descartadas: 2/2.6.jpg (rótulo «#EclipsePuntaCana» en la pared),
+# 2/2.6.png y 1/1.1.png (parejas de boda), 2/mesas.png (archivo dañado) y las sueltas de boda.
+# (se busca subiendo carpetas: el proyecto puede estar en su sitio o en un worktree de .claude/)
+MATERIAL_15_10 = next((p / '_miguel' / 'entrada' / '2026-10-15' / 'karaya' / 'material-recibido' / 'fotos web'
+                       for p in RAIZ.parents if (p / '_miguel').is_dir()), Path('no-existe'))
+# 15/10 tarde: el Photo Booth (1/1.jpeg) y las de corporativo (2/*) se sustituyen por la entrega de
+# marketing (FOTOS_MKT_15_10), que indica dónde va cada una.
+FOTOS_15_10 = {
+    '3/3.3.jpg': 'karaya-canapes',                  # punto 3 · tarjeta de canapés (incentivos)
+    '3/3.7.jpg': 'karaya-canapes-bandejas',
+    '4/4.4.jpg': 'karaya-celebracion-brindis',      # punto 4 · mosaico de la portada y galería
+    '4/4.8.jpg': 'karaya-celebracion-mesa',
+    '4/4.7.jpg': 'karaya-celebracion-grupo',
+    '4/4.1.jpg': 'karaya-celebracion-cubierta',
+    '4/4.2.jpg': 'karaya-celebracion-piscina',
+}
+
+
+def material_15_10():
+    if not MATERIAL_15_10.exists():
+        print('material 15/10: no está la carpeta de entrada, se conservan los webp publicados')
+        return
+    from PIL import ImageOps
+    Image.MAX_IMAGE_PIXELS = None
+    destino = WEB / 'public' / 'img'
+    for origen, nombre in FOTOS_15_10.items():
+        im = ImageOps.exif_transpose(Image.open(MATERIAL_15_10 / origen)).convert('RGB')
+        for ancho, sufijo in ((1600, ''), (800, '-800')):
+            c = im.resize((ancho, round(im.height * ancho / im.width)), Image.LANCZOS) if im.width > ancho else im.copy()
+            c.save(destino / f'{nombre}{sufijo}.webp', 'WEBP', quality=82, method=6)
+        print('foto', nombre, im.size)
+
+
+# Entrega de marketing del 15/10 tarde (OneDrive, INVENTARIO-DE-FOTOS.xlsx). Sustituye a parte de
+# la anterior: Photo Booth, canapés, corporativo y celebraciones. Las fotos del «retiro» se repiten
+# entre carpetas con otro nombre (IMG_8707 = 01-01 = 02-01 = 04-03, etc.): se publica una vez cada
+# archivo. 04-01 y 04-02 ya estaban publicadas (group-sunset-deck y friends-group).
+MKT_15_10 = next((p / '_miguel' / 'entrada' / '2026-10-15' / 'whatsapp' / 'marketing-web' / 'onedrive' / 'karaya-web-principal' / 'ENTREGA'
+                  for p in RAIZ.parents if (p / '_miguel').is_dir()), Path('no-existe'))
+FOTOS_MKT_15_10 = {
+    '01 Photo Booth/01-01_tarjeta-photo-booth_fiesta-a-bordo_IMG_8707.jpg': 'karaya-fiesta-a-bordo',
+    '02 Eventos corporativos/Fotos del retiro (autorizadas por contrato)/02-02_mesas-e-invitados_IMG_8712.jpg': 'karaya-retiro-mesas',
+    '02 Eventos corporativos/Fotos del retiro (autorizadas por contrato)/02-03_grupo-en-la-pista_IMG_8681.jpg': 'karaya-retiro-pista',
+    '02 Eventos corporativos/Fotos del retiro (autorizadas por contrato)/02-04_grupo-con-sombreros_IMG_8725.jpg': 'karaya-retiro-sombreros',
+    '02 Eventos corporativos/Fotos del retiro (autorizadas por contrato)/02-05_baile-y-grupo_IMG_8665.jpg': 'karaya-retiro-baile',
+    '02 Eventos corporativos/Fotos del retiro (autorizadas por contrato)/02-06_servicio-vertical_IMG_8624.jpg': 'karaya-retiro-servicio',
+    '02 Eventos corporativos/Fotos del retiro (autorizadas por contrato)/02-07_fiesta-cubierta-inferior_con-marca_IMG_8734.jpg': 'karaya-retiro-cubierta-inferior',
+    '02 Eventos corporativos/Fotos del retiro (autorizadas por contrato)/02-08_baile-cubierta-techada_con-marca_IMG_8672.jpg': 'karaya-retiro-cubierta-techada',
+    '03 Canapés/03-01_bocaditos-de-platano-bandeja_IMG_2860.jpg': 'karaya-canapes-platano',
+    '03 Canapés/03-02_bocaditos-de-platano-primer-plano_IMG_2861.jpg': 'karaya-canapes-platano-detalle',
+    '03 Canapés/03-03_croquetas-bandeja-recorte_IMG_8511.jpg': 'karaya-croquetas',
+    '04 Celebraciones/Fotos del retiro (autorizadas por contrato)/04-08_dos-mujeres-bailando-vertical_IMG_8700.jpg': 'karaya-celebracion-baile-dos',
+    '04 Celebraciones/Fotos del retiro (autorizadas por contrato)/04-09_mujer-bailando-vertical_IMG_8727.jpg': 'karaya-celebracion-baile',
+    'Extra A - Cubierta y arte de Karaya/IMG_8223.JPG': 'karaya-mural-logo',
+    'Extra A - Cubierta y arte de Karaya/IMG_8225.JPG': 'karaya-pulpo-tridente',
+}
+
+
+def mkt_15_10():
+    if not MKT_15_10.exists():
+        print('marketing 15/10: no está la carpeta de entrada, se conservan los webp publicados')
+        return
+    from PIL import ImageOps
+    Image.MAX_IMAGE_PIXELS = None
+    destino = WEB / 'public' / 'img'
+    for origen, nombre in FOTOS_MKT_15_10.items():
+        # EXIF: las de «Extra A» vienen con orientación 8 (exif_transpose las endereza).
+        im = ImageOps.exif_transpose(Image.open(MKT_15_10 / origen)).convert('RGB')
+        for ancho, sufijo in ((1600, ''), (800, '-800')):
+            c = im.resize((ancho, round(im.height * ancho / im.width)), Image.LANCZOS) if im.width > ancho else im.copy()
+            c.save(destino / f'{nombre}{sufijo}.webp', 'WEBP', quality=82, method=6)
+        print('foto', nombre, im.size)
+
+
+# Imagen de vista previa por página (og:image), 1200×630 (prueba técnica del 15/10: antes era la
+# misma en todas). Recorte centrado de la foto de cabecera de cada ruta; nombre = ruta.
+OG = {
+    'home': ('karaya-punta-cana-aerial-venue-full', 0.5),
+    'private-events': ('karaya-punta-cana-friends-group', 0.35),
+    'weddings': ('karaya-galeria-boda', 0.4),
+    'corporate': ('karaya-retiro-pista', 0.45),
+    'traffic-light-party': ('karaya-punta-cana-deck-party-crowd', 0.45),
+    'the-catamaran': ('karaya-barco-seccion', 0.5),
+    'gallery': ('karaya-zona-aerea', 0.5),
+    'contact': ('karaya-zona-cubierta', 0.5),
+    'faq': ('karaya-punta-cana-group-sunset-deck', 0.2),
+    'terms': ('karaya-punta-cana-aerial-venue-coast', 0.5),
+    'privacy': ('karaya-punta-cana-aerial-venue-coast', 0.5),
+}
+
+
+def og():
+    destino = WEB / 'public' / 'og'
+    destino.mkdir(exist_ok=True)
+    for nombre, (foto, alto_rel) in OG.items():
+        im = Image.open(WEB / 'public' / 'img' / f'{foto}.webp').convert('RGB')
+        escala = max(1200 / im.width, 630 / im.height)
+        im = im.resize((round(im.width * escala), round(im.height * escala)), Image.LANCZOS)
+        x = (im.width - 1200) // 2
+        y = round((im.height - 630) * alto_rel)
+        im.crop((x, y, x + 1200, y + 630)).save(destino / f'{nombre}.jpg', 'JPEG', quality=84, optimize=True, progressive=True)
+        print('og', nombre)
+
+
 def dimensiones():
     # Ancho × alto de cada foto publicada (1600): Foto los pone como width/height para que
     # el navegador reserve el hueco antes de cargar (sin saltos, y la galería no colapsa).
@@ -217,6 +323,9 @@ def dimensiones():
 
 if __name__ == '__main__':
     fotos()
+    material_15_10()
+    mkt_15_10()
     dimensiones()
+    og()
     logos()
     fuente()

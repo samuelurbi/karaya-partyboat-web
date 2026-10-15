@@ -10,7 +10,7 @@
 // - Con reduced-motion: sin giro automático y sin viaje de cámara (salta al plano).
 // - Si WebGL falla, queda la cuadrícula de zonas con foto (bloques/Zonas).
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, m as motion, useReducedMotion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { Box, Plus } from 'lucide-react';
 import { Foto } from '@/components/ui';

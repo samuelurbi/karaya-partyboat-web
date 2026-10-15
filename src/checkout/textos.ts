@@ -14,7 +14,7 @@ export const tx = {
   cuantasHoras: T('How many hours on board?', '¿Cuántas horas a bordo?'),
   horas: T('{n} h', '{n} h'),
   tamanoGrupo: T('Group size', 'Tamaño del grupo'),
-  minimo: T('Packages start at {n} guests', 'Los paquetes empiezan en {n} personas'),
+  minimo: T('Minimum {n} guests, or a US$5,000 minimum spend for smaller groups.', 'Mínimo {n} personas, o un consumo mínimo de US$5.000 para grupos más pequeños.'),
   tipoEvento: T('Type of event', 'Tipo de evento'),
   sujetaConfirmacion: T('Pick any date: every request is subject to confirmation. We check availability and confirm it with your quote.', 'Elige cualquier fecha: cada solicitud está sujeta a confirmación. Comprobamos la disponibilidad y te la confirmamos con tu cotización.'),
   extrasTitulo: T('Anything you would like to add?', '¿Quieres añadir algo?'),
@@ -48,7 +48,7 @@ export const tx = {
   revisaSub: T('Nothing is charged now. We check the date and send your quote and your contract to sign by email.', 'No se cobra nada ahora. Revisamos la fecha y te enviamos por email tu cotización y tu contrato para firmar.'),
   solicitar: T('Request my quote', 'Solicitar mi cotización'),
   desde: T('Price', 'Precio'),
-  aMedida: T('From US$95 pp', 'Desde US$95 pp'),
+  aMedida: T('From US$95', 'Desde US$95'),
   aMedidaSub: T('Final price in your quote, by email.', 'Precio final en tu cotización, por email.'),
 
   // Resumen (pase de embarque)

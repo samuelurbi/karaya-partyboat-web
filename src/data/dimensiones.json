@@ -7,6 +7,78 @@
   1322,
   1190
  ],
+ "karaya-borde-reserva-izquierda": [
+  480,
+  640
+ ],
+ "karaya-borde-servicios-derecha": [
+  520,
+  693
+ ],
+ "karaya-borde-venue-izquierda": [
+  520,
+  693
+ ],
+ "karaya-canapes-bandejas": [
+  1200,
+  800
+ ],
+ "karaya-canapes-platano-detalle": [
+  1600,
+  2133
+ ],
+ "karaya-canapes-platano": [
+  1600,
+  2133
+ ],
+ "karaya-canapes": [
+  1200,
+  800
+ ],
+ "karaya-celebracion-baile-dos": [
+  1600,
+  2400
+ ],
+ "karaya-celebracion-baile": [
+  1600,
+  2400
+ ],
+ "karaya-celebracion-brindis": [
+  1200,
+  800
+ ],
+ "karaya-celebracion-cubierta": [
+  1200,
+  800
+ ],
+ "karaya-celebracion-grupo": [
+  1600,
+  1067
+ ],
+ "karaya-celebracion-mesa": [
+  1600,
+  1067
+ ],
+ "karaya-celebracion-piscina": [
+  1200,
+  800
+ ],
+ "karaya-croquetas": [
+  1600,
+  1632
+ ],
+ "karaya-esquina-derecha": [
+  900,
+  675
+ ],
+ "karaya-esquina-izquierda": [
+  900,
+  675
+ ],
+ "karaya-fiesta-a-bordo": [
+  1600,
+  1067
+ ],
  "karaya-galeria-boda": [
   1200,
   800
@@ -22,6 +94,14 @@
  "karaya-hero-03-atardecer": [
   1600,
   900
+ ],
+ "karaya-mural-logo": [
+  1600,
+  2400
+ ],
+ "karaya-pulpo-tridente": [
+  1600,
+  2400
  ],
  "karaya-punta-cana-aerial-venue-coast": [
   1600,
@@ -78,6 +158,34 @@
  "karaya-punta-cana-group-sunset-deck": [
   1536,
   2048
+ ],
+ "karaya-retiro-baile": [
+  1600,
+  1067
+ ],
+ "karaya-retiro-cubierta-inferior": [
+  1600,
+  1067
+ ],
+ "karaya-retiro-cubierta-techada": [
+  1600,
+  1067
+ ],
+ "karaya-retiro-mesas": [
+  1600,
+  1067
+ ],
+ "karaya-retiro-pista": [
+  1600,
+  1067
+ ],
+ "karaya-retiro-servicio": [
+  1600,
+  2400
+ ],
+ "karaya-retiro-sombreros": [
+  1600,
+  1067
  ],
  "karaya-zona-aerea": [
   1200,

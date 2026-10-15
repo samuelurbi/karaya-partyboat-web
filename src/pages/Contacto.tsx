@@ -5,9 +5,9 @@
 // Formulario corto de 6 campos con «Occasion» como desplegable fijo (métrica del
 // reposicionamiento). Estados: errores en línea y enviado.
 import { useId, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m as motion } from 'framer-motion';
 import { clsx } from 'clsx';
-import { ArrowUpRight, CheckCircle2, ChevronDown, Instagram, Mail, MapPin, MessageCircle } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, ChevronDown, Instagram, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { Shell } from '@/components/Shell';
 import { Mural, SombraPalma } from '@/components/marca';
 import { HeroFoto } from '@/components/bloques';
@@ -116,6 +116,21 @@ export function Contacto() {
                 <span className="block font-semibold">{marca.email}</span>
               </span>
             </motion.a>
+            {/* Teléfonos (punto 11 del material del cliente): dos enlaces en una misma tarjeta. */}
+            <motion.div variants={entradaTarjeta} className={canal}>
+              <Phone size={22} className="text-mar-texto" />
+              <span className="flex-1">
+                <span className="block text-[13px] font-semibold uppercase tracking-[0.12em] text-texto-3">{t(contacto.canales.telefono)}</span>
+                <span className="flex flex-wrap gap-x-5 font-semibold">
+                  <a href={`tel:${marca.telefonoGratisEnlace}`} className="inline-flex min-h-[44px] items-center hover:text-sol">
+                    <span className="mr-1.5 font-normal text-texto-2">{t(contacto.canales.gratis)}</span> {marca.telefonoGratis}
+                  </a>
+                  <a href={`tel:${marca.telefonoLocalEnlace}`} className="inline-flex min-h-[44px] items-center hover:text-sol">
+                    <span className="mr-1.5 font-normal text-texto-2">{t(contacto.canales.local)}</span> {marca.telefonoLocal}
+                  </a>
+                </span>
+              </span>
+            </motion.div>
             <motion.a variants={entradaTarjeta} href={`https://instagram.com/${marca.instagram}`} target="_blank" rel="noopener noreferrer" className={canal}>
               <Instagram size={22} className="text-mar-texto" />
               <span>

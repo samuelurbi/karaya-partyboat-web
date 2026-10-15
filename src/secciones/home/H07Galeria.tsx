@@ -4,7 +4,7 @@
 // pies, mismo radio para todas. Hover: la foto se acerca y las demás se atenúan. Clic: visor a
 // pantalla completa (el de /gallery). Fotos reales del cliente.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, motion, useInView } from 'framer-motion';
+import { AnimatePresence, m as motion, useInView } from 'framer-motion';
 import { clsx } from 'clsx';
 import { Acento, BotonLink, Foto } from '@/components/ui';
 import { Visor } from '@/components/Visor';

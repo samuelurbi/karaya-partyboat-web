@@ -3,7 +3,7 @@
 // divisiones, cita editorial, las seis zonas con foto real (fuera el barco dibujado), los murales
 // en fotos reales y el exterior en galería Pinterest. Sin Angurria: «original murals». Fuera soles y
 // olas dibujados. No se usa la aérea con el rótulo de Eclipse.
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { Shell } from '@/components/Shell';
 import { Mural, SombraPalma } from '@/components/marca';
 import { CierreSol } from '@/components/comunes';

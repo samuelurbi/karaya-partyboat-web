@@ -15,7 +15,7 @@
 //   hacia la solicitud (sin WhatsApp: aquí no es lugar de ayuda, regla del proyecto).
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { Armchair, ArrowRight, ArrowUpRight, CalendarDays, CircleDollarSign, Clock, Sailboat, Users, Waves, Wine } from 'lucide-react';
 import { Acento, Foto } from '@/components/ui';

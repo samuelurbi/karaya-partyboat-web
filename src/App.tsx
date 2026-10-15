@@ -2,12 +2,11 @@
 // propio marco (sin navegación: un solo objetivo por pantalla).
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
-import { MotionConfig } from 'framer-motion';
+import { LazyMotion, MotionConfig } from 'framer-motion';
 import { IdiomaProvider } from '@/lib/idioma';
 import { Preloader } from '@/components/Preloader';
 import { emitir } from '@/lib/analitica';
 import { HerramientasAgentes } from '@/lib/webmcp';
-import { MantenerIncentivos } from '@/lib/incentivos';
 import { Home } from '@/pages/Home';
 import { bodas, corporativo, privacidad, privado, terminos } from '@/data/paginas';
 
@@ -33,14 +32,18 @@ function AlNavegar() {
   return null;
 }
 
+// 15/10 (prueba técnica «JS de la primera vista»): framer-motion en modo diferido. Los componentes
+// usan `m` (importado como `motion`) y las funciones de animación llegan en su propio trozo.
+const funcionesMovimiento = () => import('@/lib/movimientoFunciones').then((x) => x.default);
+
 export default function App() {
   return (
     // reducedMotion="user": con prefers-reduced-motion, framer-motion no anima transformaciones.
+    <LazyMotion features={funcionesMovimiento}>
     <MotionConfig reducedMotion="user">
       <IdiomaProvider>
         <BrowserRouter>
           <AlNavegar />
-          <MantenerIncentivos />
           <HerramientasAgentes />
           <Preloader />
           <Suspense fallback={<div className="min-h-screen bg-fondo" />}>
@@ -65,5 +68,6 @@ export default function App() {
         </BrowserRouter>
       </IdiomaProvider>
     </MotionConfig>
+    </LazyMotion>
   );
 }

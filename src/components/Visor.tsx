@@ -1,7 +1,7 @@
 // Visor de fotos a pantalla completa (estado «Visor abierto» del wireframe): flechas, Esc,
 // contador y pie. Compartido por /gallery y la galería de la portada (02/10).
 import { useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m as motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { pies, type Texto } from '@/data/contenido';

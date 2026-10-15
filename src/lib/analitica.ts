@@ -23,7 +23,12 @@ export type Evento =
   | 'booking_request' // productos en modo «solicitud»
   | 'checkout_error'
   | 'click_whatsapp_help'
-  | 'click_traffic_light_checkout'; // salida al checkout de la web de Traffic Light (docs/09)
+  | 'click_traffic_light_checkout' // salida al checkout de la web de Traffic Light (docs/09)
+  // 15/10 (bloque «Event rewards» B2): nombres que pide marketing para su contenedor de Tag Manager.
+  | 'incentivos_vista' // el bloque asoma (una vez)
+  | 'incentivos_cta' // «Get a quote» de una columna, con el tramo
+  | 'cotizacion_enviada' // solicitud enviada (con el tramo, si viene del bloque)
+  | 'whatsapp_clic'; // cualquier enlace de ayuda por WhatsApp
 
 type Params = Record<string, unknown>;
 
@@ -33,10 +38,16 @@ declare global {
   }
 }
 
+// Equivalencias para marketing (15/10): además del evento de siempre, se manda el que pide su
+// contenedor, con la variante del bloque de incentivos.
+const ALIAS: Partial<Record<Evento, Evento>> = { click_whatsapp_help: 'whatsapp_clic', booking_request: 'cotizacion_enviada' };
+
 export function emitir(evento: Evento, params: Params = {}) {
   const payload = { event: evento, ...params };
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(payload);
+  const alias = ALIAS[evento];
+  if (alias) window.dataLayer.push({ ...payload, event: alias, variante: 'b2' });
   if (import.meta.env.DEV) console.debug('[evento]', payload);
 }
 

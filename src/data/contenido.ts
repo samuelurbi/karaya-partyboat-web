@@ -15,7 +15,13 @@ export const marca = {
   whatsapp: '+1 809 803 9529',
   whatsappNumero: '18098039529',
   instagram: 'karayapuntacana',
-  email: 'events@karayapartyboat.com',
+  // 15/10: contacto comercial que mandó el cliente (punto 11 del material). El local es el mismo
+  // número que el WhatsApp.
+  email: 'sales@karayapuntacana.com',
+  telefonoGratis: '1-800-657-0016',
+  telefonoGratisEnlace: '+18006570016',
+  telefonoLocal: '+1 809 803 9529',
+  telefonoLocalEnlace: '+18098039529',
 };
 
 // Los datos verificados (brief § 4). «Largest» siempre con 938 m²/300 al lado.
@@ -41,7 +47,7 @@ export const menuEventos = {
   items: [
     { label: T('Private celebrations', 'Celebraciones privadas'), detalle: T('Birthdays, bachelorettes, big groups', 'Cumpleaños, despedidas, grupos grandes'), to: '/private-events', foto: 'karaya-punta-cana-friends-group' },
     { label: T('Weddings', 'Bodas'), detalle: T('Ceremony, reception, vow renewals', 'Ceremonia, recepción, renovación de votos'), to: '/weddings', foto: 'karaya-punta-cana-banquet-setup' },
-    { label: T('Corporate', 'Corporativo'), detalle: T('Year-end, activations, incentives', 'Cierres de año, activaciones, incentivos'), to: '/corporate', foto: 'karaya-punta-cana-aerial-venue-coast' },
+    { label: T('Corporate', 'Corporativo'), detalle: T('Year-end, activations, incentives', 'Cierres de año, activaciones, incentivos'), to: '/corporate', foto: 'karaya-retiro-mesas' },
   ],
 };
 export const navegacionSecundaria = [
@@ -137,7 +143,7 @@ export const home = {
     pasos: [
       { icono: 'fecha' as const, titulo: T('Pick your date', 'Elige tu fecha'), texto: T('Any date you like: every request is subject to confirmation.', 'La fecha que quieras: cada solicitud está sujeta a confirmación.') },
       { icono: 'grupo' as const, titulo: T('Tell us about your group', 'Cuéntanos de tu grupo'), texto: T('Occasion, group size and how to reach you. Two minutes, no account.', 'Ocasión, número de personas y cómo contactarte. Dos minutos, sin cuenta.') },
-      { icono: 'contrato' as const, titulo: T("Sign and it's yours", 'Firma y es tuyo'), texto: T('Your quote and contract arrive by email. The 10% deposit secures your date.', 'La cotización y el contrato te llegan por email. El depósito del 10 % asegura tu fecha.') },
+      { icono: 'contrato' as const, titulo: T("Sign and it's yours", 'Firma y es tuyo'), texto: T('Your quote and contract arrive by email. The 10% deposit secures your date. Any quotation is tentative until the 10% deposit is paid.', 'La cotización y el contrato te llegan por email. El depósito del 10 % asegura tu fecha. Cualquier cotización es provisional hasta que se paga el depósito del 10 %.') },
     ],
     // Tranquilidad junto al botón (dato de la FAQ «¿Cómo se paga?»).
     nota: T('Nothing is charged online. You only pay the 10% deposit once you sign.', 'No se cobra nada en línea. Solo pagas el depósito del 10 % cuando firmas.'),
@@ -169,61 +175,71 @@ export const home = {
     // fiesta, comida, espacio y grupo en cada columna. 15/10 (MA-84): sin fotos de boda (el beso
     // y la cena de gala); entran la vista aérea llena y el bufé. Cuando lleguen las fotos nuevas de
     // cumpleaños, fiestas privadas y corporativo (Joshuard y Cathy) van aquí, en lugar de estas dos.
+    // 15/10: llegaron (material del cliente, punto 4): un brindis y una mesa de celebración.
+    // 15/10 tarde (entrega de marketing, INVENTARIO-DE-FOTOS): celebraciones reales. 04-01 y 04-02
+    // (huecos 1 y 2) son group-sunset-deck y friends-group; el resto, fotos del retiro. Sin la del
+    // Photo Booth (IMG_8707) ni la de la tarjeta corporativa (IMG_8712): ya salen en la portada.
     mosaico: [
       { f: 'karaya-punta-cana-group-sunset-deck', forma: 'aspect-[3/4]' },
       { f: 'karaya-zona-pista', forma: 'aspect-[4/3]' },
-      { f: 'karaya-punta-cana-aerial-venue-full', forma: 'aspect-[4/5]' },
-      { f: 'karaya-punta-cana-deck-party-crowd', forma: 'aspect-[3/2]' },
+      { f: 'karaya-punta-cana-friends-group', forma: 'aspect-[4/5]' },
+      { f: 'karaya-retiro-pista', forma: 'aspect-[3/2]' },
       { f: 'karaya-zona-barra', forma: 'aspect-square' },
-      { f: 'karaya-punta-cana-friends-group', forma: 'aspect-[3/4]' },
-      { f: 'karaya-punta-cana-buffet-guests', forma: 'aspect-[3/2]' },
+      { f: 'karaya-celebracion-baile-dos', forma: 'aspect-[3/4]' },
+      { f: 'karaya-retiro-baile', forma: 'aspect-[3/2]' },
       { f: 'karaya-punta-cana-dj-booth', forma: 'aspect-square' },
-      { f: 'karaya-punta-cana-drinks-toast', forma: 'aspect-[5/4]' },
-      { f: 'karaya-zona-escalera', forma: 'aspect-[4/5]' },
-      { f: 'karaya-galeria-proa', forma: 'aspect-[3/2]' },
-      { f: 'karaya-punta-cana-catering-tacos', forma: 'aspect-[4/3]' },
+      { f: 'karaya-retiro-sombreros', forma: 'aspect-[5/4]' },
+      { f: 'karaya-celebracion-baile', forma: 'aspect-[4/5]' },
+      { f: 'karaya-punta-cana-deck-party-crowd', forma: 'aspect-[3/2]' },
+      { f: 'karaya-zona-escalera', forma: 'aspect-[4/3]' },
     ],
   },
   cierre: T('No two events on Karaya look the same, because *no two groups do*.', 'Ningún evento en Karaya se ve igual a otro, porque *ningún grupo lo es*.'),
 };
 
-// ─── Programa de incentivos (MA-84, 15/10) ──────────────────────────────────
+// ─── Programa de incentivos «Event rewards» (MA-84) ─────────────────────────
 // Del documento del cliente (entrada/2026-10-15-incentivos/): tramos por importe contratado y
 // cuatro beneficios a elegir, en eventos privados y corporativos. Se muestra en la sección de
-// eventos de la portada y en /private-events y /corporate. Las condiciones van completas.
+// eventos de la portada y en /private-events y /corporate. 15/10 tarde: marketing elige la
+// versión B2 (planes) con sus 10 cambios (PDF «06 Bloque de incentivos B2»); el nombre visible
+// es siempre «Event rewards», nunca «Plans».
 export const incentivos = {
-  antetitulo: T('Event rewards', 'Incentivos para tu evento'),
+  antetitulo: T('Event rewards', 'Event rewards'),
   titular: T('The bigger your event, the more experiences *on us*', 'Cuanto más grande tu evento, más experiencias te *regalamos*'),
   texto: T(
-    'For private and corporate events: book from US$10,000 and pick free extras to make your celebration even more spectacular.',
-    'Para eventos privados y corporativos: contrata desde US$10.000 y elige experiencias gratis para hacer tu celebración todavía más espectacular.',
+    'For private and corporate events: book from US$10,000 and pick free extras to make your celebration even more spectacular. Levels are set by the total of your event quote, not by the number of guests.',
+    'Para eventos privados y corporativos: contrata desde US$10.000 y elige experiencias gratis para hacer tu celebración todavía más espectacular. Los niveles se fijan por el total de tu cotización, no por el número de invitados.',
   ),
   desde: T('From', 'Desde'),
   tramos: [
-    { importe: T('US$10,000', 'US$10.000'), n: 1, etiqueta: T('free extra', 'beneficio gratis') },
-    { importe: T('US$20,000', 'US$20.000'), n: 2, etiqueta: T('free extras', 'beneficios gratis') },
-    { importe: T('US$30,000', 'US$30.000'), n: 3, etiqueta: T('free extras', 'beneficios gratis') },
+    { nivel: 10000, importe: T('US$10,000', 'US$10.000'), n: 1, etiqueta: T('free extra', 'beneficio gratis') },
+    { nivel: 20000, importe: T('US$20,000', 'US$20.000'), n: 2, etiqueta: T('free extras', 'beneficios gratis') },
+    { nivel: 30000, importe: T('US$30,000', 'US$30.000'), n: 3, etiqueta: T('free extras', 'beneficios gratis') },
   ],
-  // `foto`: real del proyecto. El Photo Booth 360° aún no tiene foto (la traen Joshuard y Cathy).
+  eligeN: T('Pick {n} of the four extras below.', 'Elige {n} de los cuatro beneficios de abajo.'),
+  cta: T('Get a quote for this level', 'Pedir cotización con este nivel'),
+  // `foto`: reales. Photo Booth: el Photo Booth se cotiza aparte y no hay fotos del equipo; Karaya
+  // pide una de fiesta a bordo (01-01). Canapés: bocaditos de plátano (03-01). Entrega 15/10 tarde.
   beneficios: [
     { id: 'dj' as const, titulo: T('Free DJ', 'DJ gratis'), texto: T('A DJ to keep the party going.', 'Servicio de DJ para amenizar el evento.'), foto: 'karaya-punta-cana-dj-booth' },
-    { id: 'booth' as const, titulo: T('360° Photo Booth', 'Photo Booth 360°'), texto: T('A 360° video experience for your guests.', 'Experiencia de vídeo 360° para tus invitados.'), foto: undefined },
-    { id: 'canapes' as const, titulo: T('Two canapés per guest', 'Dos canapés por persona'), texto: T('Two extra canapés for every guest.', 'Dos canapés adicionales para cada invitado.'), foto: 'karaya-punta-cana-catering-canapes' },
+    { id: 'booth' as const, titulo: T('360° Photo Booth', 'Photo Booth 360°'), texto: T('A 360° video experience for your guests.', 'Experiencia de vídeo 360° para tus invitados.'), foto: 'karaya-fiesta-a-bordo' },
+    { id: 'canapes' as const, titulo: T('Two canapés per guest', 'Dos canapés por persona'), texto: T('Two extra canapés for every guest.', 'Dos canapés adicionales para cada invitado.'), foto: 'karaya-canapes-platano' },
     { id: 'barra' as const, titulo: T('30 more minutes of open bar', '30 minutos más de open bar'), texto: T('Half an hour more, in the drinks tier you booked.', 'Media hora más de barra libre con tu categoría de bebidas.'), foto: 'karaya-punta-cana-drinks-toast' },
   ],
-  cta: T('Get a quote', 'Pedir cotización'),
-  // Textos de las versiones B1 (presupuesto deslizable) y B2 (planes).
-  presupuesto: T('Your estimated budget', 'Tu presupuesto estimado'),
-  desbloqueados: T('free extras unlocked', 'beneficios desbloqueados'),
-  aunNo: T('From US$10,000 you start picking free extras.', 'Desde US$10.000 empiezas a elegir beneficios gratis.'),
-  toca: T('Tap to pick yours', 'Toca para elegir los tuyos'),
-  elegidos: T('picked', 'elegidos'),
-  de: T('of', 'de'),
-  eligeDe: T('Pick from the four', 'Elige entre los cuatro'),
+  cuatro: T('The four extras, whichever level you reach', 'Los cuatro beneficios, sea cual sea tu nivel'),
+  // Lo esencial, visible bajo los botones; el resto, plegado (cambio 4).
+  condicionesCortas: T('Not exchangeable for cash or discounts. Subject to availability and operational confirmation.', 'No canjeables por dinero ni por descuentos. Sujetos a disponibilidad y confirmación operativa.'),
+  verCondiciones: T('All conditions', 'Todas las condiciones'),
   condiciones: T(
     'Pick as many extras as your tier allows; each one can be chosen once. Not exchangeable for cash or discounts. Subject to availability and operational confirmation. The eligible amount and applicable taxes are confirmed in your quote.',
     'Elige tantos beneficios como permita tu tramo; cada uno se puede elegir una sola vez. No canjeables por dinero ni por descuentos. Sujetos a disponibilidad y confirmación operativa. El importe elegible y los impuestos aplicables se confirman en la cotización.',
   ),
+  // Formulario de cotización: el tramo llega por la URL (?nivel=) y los regalos son opcionales (cambio 5).
+  formulario: {
+    titulo: T('Event rewards', 'Event rewards'),
+    nivel: T('Level: from {importe} · {n} {etiqueta}', 'Nivel: desde {importe} · {n} {etiqueta}'),
+    preferidos: T('Preferred extras (optional). We confirm them with your quote.', 'Beneficios preferidos (opcional). Los confirmamos con tu cotización.'),
+  },
 };
 
 export type Puerta = {
@@ -243,17 +259,17 @@ export type Puerta = {
 // brand») se sustituye; y desde el 01/10 el orden es el del buscador (primero los eventos a
 // cotización, la fiesta al final) y la fiesta usa la bajada de su página en vez de repetir el horario.
 export const puertas: Puerta[] = [
-  { id: 'private-events', titulo: T('Private celebrations', 'Celebraciones privadas'), resumen: T('Birthdays, bachelor and bachelorette parties, anniversaries, friend groups.', 'Cumpleaños, despedidas, aniversarios, grupos de amigos.'), precio: T('From US$95 per person', 'Desde US$95 por persona'), to: '/private-events', foto: 'karaya-punta-cana-friends-group',
-    datos: [{ icono: 'personas', texto: T('50–300 guests', '50–300 personas') }, { icono: 'precio', texto: T('From US$95 pp', 'Desde US$95 pp') }],
+  { id: 'private-events', titulo: T('Private celebrations', 'Celebraciones privadas'), resumen: T('Birthdays, bachelor and bachelorette parties, anniversaries, friend groups.', 'Cumpleaños, despedidas, aniversarios, grupos de amigos.'), precio: T('From US$95', 'Desde US$95'), to: '/private-events', foto: 'karaya-punta-cana-friends-group',
+    datos: [{ icono: 'personas', texto: T('80–300 guests · or US$5,000 minimum spend', '80–300 personas · o consumo mínimo de US$5.000') }, { icono: 'precio', texto: T('From US$95', 'Desde US$95') }],
     boton: { texto: T('Get a quote', 'Pedir cotización'), to: '/book/private-events' } },
   // 15/10 (MA-84): corporativo antes que bodas (la marca pesa en fiesta; bodas queda como una línea más).
-  // Foto: aérea del venue hasta que lleguen las de eventos corporativos (Joshuard y Cathy).
-  { id: 'corporate', titulo: T('Corporate events', 'Eventos corporativos'), resumen: T('Year-end parties, brand activations and incentive groups.', 'Cierres de año, activaciones de marca y grupos de incentivo.'), precio: T('From US$95 per person', 'Desde US$95 por persona'), to: '/corporate', foto: 'karaya-punta-cana-aerial-venue-coast',
-    datos: [{ icono: 'personas', texto: T('50–300 guests', '50–300 personas') }, { icono: 'precio', texto: T('From US$95 pp', 'Desde US$95 pp') }],
+  // Foto: evento de empresa real a bordo (entrega de marketing 15/10, 02-02).
+  { id: 'corporate', titulo: T('Corporate events', 'Eventos corporativos'), resumen: T('Year-end parties, brand activations and incentive groups.', 'Cierres de año, activaciones de marca y grupos de incentivo.'), precio: T('From US$95', 'Desde US$95'), to: '/corporate', foto: 'karaya-retiro-mesas',
+    datos: [{ icono: 'personas', texto: T('80–300 guests · or US$5,000 minimum spend', '80–300 personas · o consumo mínimo de US$5.000') }, { icono: 'precio', texto: T('From US$95', 'Desde US$95') }],
     boton: { texto: T('Get a quote', 'Pedir cotización'), to: '/book/corporate' } },
   // Foto real de montaje editada por Codex a boda (design-assets/originals/bento/ENCARGO-5): pendiente de Ray.
   { id: 'weddings', titulo: T('Weddings and formal events', 'Bodas y eventos formales'), resumen: T('Ceremony, reception and vow renewals on the water.', 'Ceremonia, recepción y renovación de votos sobre el agua.'), to: '/weddings', foto: 'karaya-boda-recepcion',
-    datos: [{ icono: 'personas', texto: T('120 seated · 300 cocktail', '120 sentados · 300 en cóctel') }, { icono: 'precio', texto: T('From US$95 pp', 'Desde US$95 pp') }],
+    datos: [{ icono: 'personas', texto: T('120 seated · 300 cocktail', '120 sentados · 300 en cóctel') }, { icono: 'precio', texto: T('From US$95', 'Desde US$95') }],
     boton: { texto: T('Get a quote', 'Pedir cotización'), to: '/book/weddings' } },
   { id: 'traffic-light-party', titulo: T('Traffic Light Party', 'Traffic Light Party'), resumen: T('Three hours on the water. Pick a color, the DJ does the rest.', 'Tres horas sobre el agua. Elige un color, el DJ hace el resto.'), precio: T('US$89 per person', 'US$89 por persona'), to: '/traffic-light-party', foto: 'karaya-punta-cana-deck-party-crowd',
     datos: [{ icono: 'calendario', texto: T('Thu · 3–6 pm', 'Jue · 3–6 p. m.') }, { icono: 'personas', texto: T('Up to 200', 'Hasta 200') }, { icono: 'precio', texto: T('US$89 pp', 'US$89 pp') }],
@@ -341,6 +357,29 @@ export const pies: Record<string, Texto> = {
   'karaya-punta-cana-catering-sushi': T('Sushi platter.', 'Bandeja de sushi.'),
   'karaya-punta-cana-catering-tacos': T('Tacos, fresh from the kitchen.', 'Tacos recién hechos.'),
   'karaya-punta-cana-catering-canapes': T('Sushi rolls by the rail.', 'Rolls de sushi junto a la baranda.'),
+  // Material del cliente (15/10)
+  'karaya-fiesta-a-bordo': T('Guests dancing under the covered deck.', 'Invitados bailando bajo la cubierta techada.'),
+  'karaya-retiro-mesas': T('A company group at their tables on board.', 'Un grupo de empresa en sus mesas a bordo.'),
+  'karaya-retiro-pista': T('A company group on the dance floor.', 'Un grupo de empresa en la pista.'),
+  'karaya-retiro-sombreros': T('Hats on, the party starts on deck.', 'Con sombreros, empieza la fiesta en cubierta.'),
+  'karaya-retiro-baile': T('Dancing with the whole group on deck.', 'Bailando con todo el grupo en cubierta.'),
+  'karaya-retiro-servicio': T('Food served on board.', 'Comida servida a bordo.'),
+  'karaya-retiro-cubierta-inferior': T('A company party on the lower deck.', 'Una fiesta de empresa en el nivel inferior.'),
+  'karaya-retiro-cubierta-techada': T('Dancing on the covered deck.', 'Baile en la cubierta techada.'),
+  'karaya-canapes-platano': T('Plantain canapés on a tray.', 'Bocaditos de plátano en bandeja.'),
+  'karaya-canapes-platano-detalle': T('Plantain canapés, close up.', 'Bocaditos de plátano de cerca.'),
+  'karaya-croquetas': T('A tray of croquettes.', 'Una bandeja de croquetas.'),
+  'karaya-celebracion-baile-dos': T('Two friends dancing on deck.', 'Dos amigas bailando en cubierta.'),
+  'karaya-celebracion-baile': T('Dancing on the deck.', 'Bailando en la cubierta.'),
+  'karaya-mural-logo': T('The Karaya mural on the upper deck.', 'El mural de Karaya en el nivel superior.'),
+  'karaya-pulpo-tridente': T('The octopus with its trident on deck.', 'El pulpo con su tridente en la cubierta.'),
+  'karaya-canapes': T('Canapés served in cups on board.', 'Canapés servidos en vasitos a bordo.'),
+  'karaya-canapes-bandejas': T('Trays of canapés by the sea.', 'Bandejas de canapés junto al mar.'),
+  'karaya-celebracion-brindis': T('A toast around the table on the lower deck.', 'Un brindis en la mesa del nivel inferior.'),
+  'karaya-celebracion-mesa': T('Friends celebrating at their table.', 'Amigas celebrando en su mesa.'),
+  'karaya-celebracion-grupo': T('A celebration under the ivy-covered deck.', 'Una celebración bajo la cubierta con hiedra.'),
+  'karaya-celebracion-cubierta': T('Guests on the open deck over turquoise water.', 'Invitados en la cubierta abierta sobre el agua turquesa.'),
+  'karaya-celebracion-piscina': T('Drinks in the natural pool, the boat behind.', 'Bebidas en la piscina natural, con el barco detrás.'),
   'karaya-hero-03-atardecer': T('Karaya sailing at sunset, lights on board.', 'Karaya navegando al atardecer, con las luces a bordo.'),
   'karaya-boda-recepcion': T('Wedding reception set on the lower deck.', 'Recepción de boda montada en la cubierta inferior.'),
   'karaya-punta-cana-banquet-setup': T('Seated banquet set on the covered deck.', 'Banquete sentado montado en la cubierta techada.'),

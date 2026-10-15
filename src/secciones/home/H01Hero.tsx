@@ -1,6 +1,6 @@
 // H01 · Diseño principal conservado; fondo 3D y hotspots integrados el 02/10/2026.
 import { useEffect, useMemo, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { m as motion, useReducedMotion } from 'framer-motion';
 import { Buscador } from '@/components/Buscador';
 import { barcoYaLlego, EVENTO_BARCO_LLEGA, OceanoHero } from './OceanoHero';
 import { usePreloader } from '@/lib/preloader';

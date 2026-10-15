@@ -6,7 +6,7 @@
 // - paneles con divisiones y luz de borde que sigue al cursor; sin sombras en hover;
 // - sin antetítulos tipo badge; acento en cursiva amarilla con *palabra*.
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, m as motion, useReducedMotion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { CalendarDays, FileSignature, Users, type LucideIcon } from 'lucide-react';
 import { Acento, Foto } from '@/components/ui';

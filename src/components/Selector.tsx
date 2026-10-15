@@ -6,7 +6,7 @@
 // - clic fuera cierra. El panel es blanco, como la tarjeta.
 // - se abre hacia ABAJO si cabe; si no, hacia ARRIBA cuando hay más sitio (02/10, useLado).
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, m as motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { Check, ChevronDown } from 'lucide-react';
 

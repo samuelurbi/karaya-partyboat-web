@@ -14,6 +14,7 @@ export type Pedido = {
   ocasion?: string; // privado/corporativo: detalle de la ocasión
   horas?: number; // privado/corporativo (si el precio es por hora)
   extras?: string[]; // extras que le interesan (solicitud; sin precio)
+  incentivo?: { nivel: number; preferidos: string[] }; // «Event rewards»: tramo (US$) y regalos preferidos, opcionales
   cliente: { nombre: string; apellido: string; email: string; prefijo: string; telefono: string; empresa?: string };
   aceptaComunicaciones: boolean;
   idioma: Idioma;

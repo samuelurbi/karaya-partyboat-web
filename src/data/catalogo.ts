@@ -60,7 +60,8 @@ function evento(id: IdProducto, nombre: Texto): Producto {
     precio: confirmado(null), // no se publica: cotización
     impuestosIncluidos: confirmado(false), // kit: «Taxes are not included»
     pago: confirmado({ tipo: 'deposito', porcentaje: 10 }), // kit: depósito del 10 %, fuera de la web
-    aforo: { min: confirmado(50), max: confirmado(300) },
+    // 15/10: mínimo 80 personas o consumo mínimo de US$5.000; máximo 300 (Ventas y Raymond).
+    aforo: { min: confirmado(80), max: confirmado(300) },
     edadMinima: confirmado(null), // también hay eventos sin alcohol para menores
     calendario: {
       dias: confirmado([0, 1, 2, 3, 4, 5, 6]),
@@ -69,11 +70,12 @@ function evento(id: IdProducto, nombre: Texto): Producto {
       antelacionMinimaHoras: confirmado(24),
       semanasVisibles: 52,
     },
-    cancelacion: pendiente(
-      T('Your 10% deposit secures the boat; it is non-refundable for cancellations within 45 days of the event.', 'Tu depósito del 10 % asegura el barco; no es reembolsable si cancelas a menos de 45 días del evento.'),
-      'Kit: 10 % y 45 días. Redacción final con el modelo de contrato (no recibido)',
+    // 15/10: condiciones que mandó el cliente (punto 9 del material). Sin el «mínimo de 80
+    // pasajeros»: el mínimo confirmado el 15/10 es 80 personas o US$5.000 de consumo.
+    cancelacion: confirmado(
+      T('Your 10% deposit confirms the date and is non-refundable if you cancel. Cancelling within 30 days of the event is charged at 100%; group reductions and the rest of the terms are in your contract.', 'Tu depósito del 10 % confirma la fecha y no es reembolsable si cancelas. Cancelar a menos de 30 días del evento supone el 100 %; las reducciones de grupo y el resto de condiciones están en tu contrato.'),
     ),
-    malTiempo: pendiente(T('Weather conditions are covered in your contract.', 'Las condiciones por clima se detallan en tu contrato.'), 'Modelo de contrato (no recibido)'),
+    malTiempo: confirmado(T('If a tropical storm makes sailing unsafe, we move your event to the next available date or refund it in full.', 'Si una tormenta tropical impide navegar con seguridad, pasamos tu evento a la siguiente fecha disponible o te devolvemos el importe completo.')),
     embarque: pendiente(T('', ''), 'Modelo de contrato'),
     queRecibes: confirmado(T('Your quote and your contract to sign, by email.', 'Tu cotización y tu contrato para firmar, por email.')),
     modo: 'solicitud',

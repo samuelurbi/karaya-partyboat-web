@@ -3,9 +3,9 @@
 // en el pie, en Contacto, en la FAQ y dentro del checkout (feedback del cliente, 28/09).
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { AnimatePresence, m as motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { clsx } from 'clsx';
-import { ArrowRight, ChevronDown, Instagram, Mail, MapPin, Menu, MessageCircle, X } from 'lucide-react';
+import { ArrowRight, ChevronDown, Instagram, Mail, MapPin, Menu, MessageCircle, Phone, X } from 'lucide-react';
 import { Logo, PalabraKaraya } from '@/components/marca';
 import { listo, usePreloader } from '@/lib/preloader';
 import { BotonLink, Foto } from '@/components/ui';
@@ -315,6 +315,14 @@ function Pie() {
             <li>
               <a href={`mailto:${marca.email}`} className="flex min-h-[40px] items-center gap-2 hover:text-texto">
                 <Mail size={17} /> {marca.email}
+              </a>
+            </li>
+            <li className="flex flex-wrap items-center gap-x-4">
+              <a href={`tel:${marca.telefonoGratisEnlace}`} className="flex min-h-[40px] items-center gap-2 hover:text-texto">
+                <Phone size={17} /> {marca.telefonoGratis}
+              </a>
+              <a href={`tel:${marca.telefonoLocalEnlace}`} className="flex min-h-[40px] items-center hover:text-texto">
+                {marca.telefonoLocal}
               </a>
             </li>
             <li className="flex gap-2 py-2">

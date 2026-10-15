@@ -2,7 +2,7 @@
 // de la portada (components/bloques): hero de foto a sangre, ocasiones en filas tipográficas,
 // cifras y pasos en paneles con divisiones, planners (bodas) en una isla clara, galería tipo
 // Pinterest y FAQ, todo sobre el mismo marino. Fuera soles, olas, destellos y bloques azul eléctrico.
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { Cake, CalendarCheck, Check, Gem, Heart, Megaphone, ShieldCheck, Trophy, Users, Wine } from 'lucide-react';
 import { Shell } from '@/components/Shell';
 import { Mural, SombraPalma } from '@/components/marca';
@@ -18,7 +18,7 @@ import { entrada, entradaTarjeta, enVista, escalonado } from '@/lib/movimiento';
 import { Pendiente } from '@/lib/notas';
 
 const iconos = { anillos: Gem, tarta: Cake, copas: Wine, corazon: Heart, grupo: Users, calendario: CalendarCheck, megafono: Megaphone, trofeo: Trophy } as const;
-const posiciones: Record<string, string> = { corporate: '60% 50%', weddings: '50% 35%', 'private-events': '50% 35%' };
+const posiciones: Record<string, string> = { corporate: '50% 45%', weddings: '50% 35%', 'private-events': '50% 35%' };
 
 export function Ocasion({ p }: { p: PaginaOcasion }) {
   const { t } = useIdioma();
@@ -172,7 +172,7 @@ export function Ocasion({ p }: { p: PaginaOcasion }) {
         </div>
       </section>
 
-      <BarraFija idHero="hero" precio={t({ en: 'From US$95 pp', es: 'Desde US$95 pp' })} detalle={t({ en: 'Request your date online', es: 'Solicita tu fecha en línea' })} destino={reserva} origen={`${origen}-barra-fija`} />
+      <BarraFija idHero="hero" precio={t({ en: 'From US$95', es: 'Desde US$95' })} detalle={t({ en: 'Request your date online', es: 'Solicita tu fecha en línea' })} destino={reserva} origen={`${origen}-barra-fija`} />
     </Shell>
   );
 }

@@ -6,3 +6,4 @@ dist/
 Thumbs.db
 # Capturas de QA (se regeneran con los scripts)
 scripts/capturas/
+__pycache__/

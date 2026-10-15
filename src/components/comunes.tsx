@@ -1,6 +1,6 @@
 // Secciones que se repiten entre páginas.
 import { useEffect, useId, useState, type ReactNode } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { m as motion, useReducedMotion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { Plus, ShieldCheck } from 'lucide-react';
 import { Acento, BotonLink, Foto } from '@/components/ui';

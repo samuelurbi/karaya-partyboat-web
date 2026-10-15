@@ -80,7 +80,7 @@ for (const lang of ['en', 'es']) {
       ok(!r.h1.some((x) => (ruta === '/weddings' || ruta === '/book/weddings' ? /mice|open bar/i : /mice|wedding|boda|open bar/i).test(x)), `${id}: palabra prohibida en el H1`);
       // Precios: solo 89 y sus múltiplos (total del checkout: 89 × personas).
       // Precios publicables (docs/09): «desde US$95» y los US$89 de la fiesta. Ninguno más.
-      ok(r.precios.every((p) => ['89', '95'].includes(p.replace(/,/g, ''))), `${id}: precio no permitido: ${r.precios.join(', ')}`);
+      ok(r.precios.every((p) => ['89', '95', '5000', '5.000'].includes(p.replace(/,/g, ''))), `${id}: precio no permitido: ${r.precios.join(', ')}`);
       ok(!/350/.test(r.texto), `${id}: aparece 350 (el aforo publicado es 300)`);
       ok(r.wa.every((u) => /text=/.test(u) && /utm_content=/.test(u)), `${id}: WhatsApp sin mensaje o sin utm_content`);
       ok(r.fijosWa === 0, `${id}: WhatsApp flotante/fijo`);

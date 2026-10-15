@@ -1,6 +1,6 @@
 // H05 · Cómo se reserva. Quita la duda de «¿y esto cómo funciona?» antes de pedir la fecha:
 // tres pasos en una ruta. Es CRO: reduce la ansiedad de comprometerse con un evento.
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { BotonLink, Acento } from '@/components/ui';
 import { CalendarDays, FileSignature, ShieldCheck, Users } from 'lucide-react';
 import { Mural } from '@/components/marca';

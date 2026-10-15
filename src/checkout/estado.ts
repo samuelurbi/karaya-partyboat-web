@@ -20,6 +20,8 @@ export type Datos = {
   aceptaTerminos: boolean;
   metodo: 'tarjeta' | 'paypal';
   extras: string[]; // extras que le interesan (sin precio; docs/09)
+  nivel: number | null; // «Event rewards»: tramo elegido en el bloque (US$)
+  preferidos: string[]; // regalos preferidos (opcionales, sin marcar de inicio)
 };
 
 const CLAVE = (p: IdProducto) => `ky-reserva:${p}`;
@@ -40,6 +42,8 @@ export function inicial(p: Producto): Datos {
     aceptaTerminos: false,
     metodo: 'tarjeta',
     extras: [],
+    nivel: null,
+    preferidos: [],
   };
 }
 
@@ -57,8 +61,11 @@ export function useReserva(id: IdProducto, entrada: URLSearchParams) {
     const n = Number(entrada.get('personas'));
     if (f && /^\d{4}-\d{2}-\d{2}$/.test(f)) d.fecha = f;
     if (n > 0) d.personas = n;
-    // Siempre dentro del aforo del producto (p. ej. de la fiesta a privado con 21 → mínimo 50).
-    const min = producto.id === 'traffic-light-party' ? 1 : producto.aforo.min.valor;
+    const nv = Number(entrada.get('nivel'));
+    if ([10000, 20000, 30000].includes(nv)) d.nivel = nv;
+    // Siempre dentro del aforo del producto. Privado: se puede pedir con menos de 80 (se cotiza
+    // por consumo mínimo de US$5.000, 15/10); el valor inicial sí es el mínimo de 80.
+    const min = 1;
     const max = producto.id === 'traffic-light-party' ? producto.maxPersonasEnLinea : producto.aforo.max.valor;
     d.personas = Math.min(max, Math.max(min, d.personas));
     return d;

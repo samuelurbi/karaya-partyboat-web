@@ -4,7 +4,7 @@
 // circular desde el centro que descubre la web. Máximo de espera: 9 s. Con reduced-motion: sin
 // escritura ni vuelo; el fondo se desvanece.
 import { useEffect, useRef, useState } from 'react';
-import { animate, motion, useMotionTemplate, useMotionValue, useReducedMotion } from 'framer-motion';
+import { animate, m as motion, useMotionTemplate, useMotionValue, useReducedMotion } from 'framer-motion';
 import { LogoEscrito } from '@/components/marca';
 import { cambiarFase, fasePreloader, marcarLogoEscrito, suscribir, tareasPendientes } from '@/lib/preloader';
 

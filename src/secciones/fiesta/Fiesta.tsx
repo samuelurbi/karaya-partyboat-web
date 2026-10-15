@@ -3,7 +3,7 @@
 // en filas, lo que incluye en un panel con divisiones y la entrada en una isla clara, las zonas con
 // foto real (fuera el barco dibujado), galería Pinterest y FAQ. La fiesta se compra en SU web (docs/09).
 import { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { ArrowUpRight, CalendarDays, Clock, LayoutPanelTop, Martini, Music2, Ship, Users } from 'lucide-react';
 import { BotonLink } from '@/components/ui';

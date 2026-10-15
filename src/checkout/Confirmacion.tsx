@@ -1,7 +1,7 @@
 // /book/confirmation · la confirmación de la solicitud: el resumen con su referencia y qué sigue
 // (cotización, contrato y depósito). WhatsApp como ayuda.
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { m as motion, useReducedMotion } from 'framer-motion';
 import { MessageCircle } from 'lucide-react';
 import { BotonLink, Foto } from '@/components/ui';
 import { catalogo } from '@/data/catalogo';
