@@ -260,6 +260,10 @@ FOTOS_MKT_15_10 = {
     '04 Celebraciones/Fotos del retiro (autorizadas por contrato)/04-09_mujer-bailando-vertical_IMG_8727.jpg': 'karaya-celebracion-baile',
     'Extra A - Cubierta y arte de Karaya/IMG_8223.JPG': 'karaya-mural-logo',
     'Extra A - Cubierta y arte de Karaya/IMG_8225.JPG': 'karaya-pulpo-tridente',
+    'Extra A - Cubierta y arte de Karaya/IMG_8220.JPG': 'karaya-mesa-detalle',
+    'Extra A - Cubierta y arte de Karaya/IMG_8221.JPG': 'karaya-mesa-detalle-2',
+    'Extra A - Cubierta y arte de Karaya/IMG_8224.JPG': 'karaya-mural-cubierta',
+    'Extra A - Cubierta y arte de Karaya/IMG_8226.JPG': 'karaya-pulpo-detalle',
 }
 
 
@@ -285,7 +289,7 @@ OG = {
     'home': ('karaya-punta-cana-aerial-venue-full', 0.5),
     'private-events': ('karaya-punta-cana-friends-group', 0.35),
     'weddings': ('karaya-galeria-boda', 0.4),
-    'corporate': ('karaya-retiro-pista', 0.45),
+    'corporate': ('karaya-fiesta-a-bordo', 0.45),
     'traffic-light-party': ('karaya-punta-cana-deck-party-crowd', 0.45),
     'the-catamaran': ('karaya-barco-seccion', 0.5),
     'gallery': ('karaya-zona-aerea', 0.5),

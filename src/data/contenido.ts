@@ -176,22 +176,21 @@ export const home = {
     // y la cena de gala); entran la vista aérea llena y el bufé. Cuando lleguen las fotos nuevas de
     // cumpleaños, fiestas privadas y corporativo (Joshuard y Cathy) van aquí, en lugar de estas dos.
     // 15/10: llegaron (material del cliente, punto 4): un brindis y una mesa de celebración.
-    // 15/10 tarde (entrega de marketing, INVENTARIO-DE-FOTOS): celebraciones reales. 04-01 y 04-02
-    // (huecos 1 y 2) son group-sunset-deck y friends-group; el resto, fotos del retiro. Sin la del
-    // Photo Booth (IMG_8707) ni la de la tarjeta corporativa (IMG_8712): ya salen en la portada.
+    // 16/10 (auditoría contra el INVENTARIO-DE-FOTOS): las 9 que pide marketing, en su orden.
+    // Hueco 1 = 04-01 y hueco 2 = 04-02 (ya publicadas como group-sunset-deck y friends-group; son el
+    // mismo archivo, comprobado píxel a píxel), y 04-03…04-09 del retiro a continuación. 04-03 e
+    // IMG_8707 (Photo Booth) y 04-07 e IMG_8712 (tarjeta corporativa) son la misma foto: el
+    // inventario las repite a propósito.
     mosaico: [
-      { f: 'karaya-punta-cana-group-sunset-deck', forma: 'aspect-[3/4]' },
-      { f: 'karaya-zona-pista', forma: 'aspect-[4/3]' },
-      { f: 'karaya-punta-cana-friends-group', forma: 'aspect-[4/5]' },
-      { f: 'karaya-retiro-pista', forma: 'aspect-[3/2]' },
-      { f: 'karaya-zona-barra', forma: 'aspect-square' },
-      { f: 'karaya-celebracion-baile-dos', forma: 'aspect-[3/4]' },
-      { f: 'karaya-retiro-baile', forma: 'aspect-[3/2]' },
-      { f: 'karaya-punta-cana-dj-booth', forma: 'aspect-square' },
-      { f: 'karaya-retiro-sombreros', forma: 'aspect-[5/4]' },
-      { f: 'karaya-celebracion-baile', forma: 'aspect-[4/5]' },
-      { f: 'karaya-punta-cana-deck-party-crowd', forma: 'aspect-[3/2]' },
-      { f: 'karaya-zona-escalera', forma: 'aspect-[4/3]' },
+      { f: 'karaya-punta-cana-group-sunset-deck', forma: 'aspect-[3/4]' }, // 04-01 · hueco 1
+      { f: 'karaya-punta-cana-friends-group', forma: 'aspect-[3/4]' }, // 04-02 · hueco 2
+      { f: 'karaya-fiesta-a-bordo', forma: 'aspect-[3/2]' }, // 04-03
+      { f: 'karaya-retiro-pista', forma: 'aspect-[3/2]' }, // 04-04
+      { f: 'karaya-retiro-sombreros', forma: 'aspect-[3/2]' }, // 04-05
+      { f: 'karaya-retiro-baile', forma: 'aspect-[3/2]' }, // 04-06
+      { f: 'karaya-retiro-mesas', forma: 'aspect-[3/2]' }, // 04-07
+      { f: 'karaya-celebracion-baile-dos', forma: 'aspect-[2/3]' }, // 04-08
+      { f: 'karaya-celebracion-baile', forma: 'aspect-[2/3]' }, // 04-09
     ],
   },
   cierre: T('No two events on Karaya look the same, because *no two groups do*.', 'Ningún evento en Karaya se ve igual a otro, porque *ningún grupo lo es*.'),
@@ -223,7 +222,7 @@ export const incentivos = {
   beneficios: [
     { id: 'dj' as const, titulo: T('Free DJ', 'DJ gratis'), texto: T('A DJ to keep the party going.', 'Servicio de DJ para amenizar el evento.'), foto: 'karaya-punta-cana-dj-booth' },
     { id: 'booth' as const, titulo: T('360° Photo Booth', 'Photo Booth 360°'), texto: T('A 360° video experience for your guests.', 'Experiencia de vídeo 360° para tus invitados.'), foto: 'karaya-fiesta-a-bordo' },
-    { id: 'canapes' as const, titulo: T('Two canapés per guest', 'Dos canapés por persona'), texto: T('Two extra canapés for every guest.', 'Dos canapés adicionales para cada invitado.'), foto: 'karaya-canapes-platano' },
+    { id: 'canapes' as const, titulo: T('Two canapés per guest', 'Dos canapés por persona'), texto: T('Two extra canapés for every guest.', 'Dos canapés adicionales para cada invitado.'), foto: 'karaya-canapes-platano', fotos: ['karaya-canapes-platano', 'karaya-canapes-platano-detalle', 'karaya-croquetas'] },
     { id: 'barra' as const, titulo: T('30 more minutes of open bar', '30 minutos más de open bar'), texto: T('Half an hour more, in the drinks tier you booked.', 'Media hora más de barra libre con tu categoría de bebidas.'), foto: 'karaya-punta-cana-drinks-toast' },
   ],
   cuatro: T('The four extras, whichever level you reach', 'Los cuatro beneficios, sea cual sea tu nivel'),
@@ -372,6 +371,10 @@ export const pies: Record<string, Texto> = {
   'karaya-celebracion-baile-dos': T('Two friends dancing on deck.', 'Dos amigas bailando en cubierta.'),
   'karaya-celebracion-baile': T('Dancing on the deck.', 'Bailando en la cubierta.'),
   'karaya-mural-logo': T('The Karaya mural on the upper deck.', 'El mural de Karaya en el nivel superior.'),
+  'karaya-mesa-detalle': T('A table detail with greenery on board.', 'Detalle de una mesa con plantas a bordo.'),
+  'karaya-mesa-detalle-2': T('Table setting detail.', 'Detalle del montaje de mesa.'),
+  'karaya-mural-cubierta': T('The Karaya mural and the upper deck.', 'El mural de Karaya y el nivel superior.'),
+  'karaya-pulpo-detalle': T('The octopus sculpture, close up.', 'La escultura del pulpo, de cerca.'),
   'karaya-pulpo-tridente': T('The octopus with its trident on deck.', 'El pulpo con su tridente en la cubierta.'),
   'karaya-canapes': T('Canapés served in cups on board.', 'Canapés servidos en vasitos a bordo.'),
   'karaya-canapes-bandejas': T('Trays of canapés by the sea.', 'Bandejas de canapés junto al mar.'),

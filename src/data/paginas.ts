@@ -144,10 +144,10 @@ export const corporativo: PaginaOcasion = {
     'Take your team off the usual ballroom circuit. Karaya offers 938 m² across two decks for a year-end party, a brand activation or an incentive group, with the ocean as the backdrop instead of a hotel conference room.',
     'Saca a tu equipo del circuito habitual de salones de hotel. Karaya ofrece 938 m² en dos niveles para un cierre de año, una activación de marca o un grupo de incentivo, con el mar de fondo en vez de una sala de conferencias.',
   ),
-  // 15/10 tarde: evento de empresa real a bordo (02-03). La 02-01 del inventario es la misma foto
-  // que la del Photo Booth, que ya sale en el bloque de incentivos de esta página.
-  foto: 'karaya-retiro-pista',
-  fotoAlt: T('A company group on the dance floor of Karaya', 'Un grupo de empresa en la pista de Karaya'),
+  // 16/10: cabecera = 02-01 («Baile en cubierta, plano amplio»), como pide el inventario. Es el mismo
+  // archivo que la foto del Photo Booth (IMG_8707), que también sale en esta página.
+  foto: 'karaya-fiesta-a-bordo',
+  fotoAlt: T('Guests dancing on the covered deck of Karaya at a company event', 'Invitados bailando en la cubierta techada de Karaya en un evento de empresa'),
   ocasionesTitulo: T('Built for teams that want more than a ballroom', 'Para equipos que quieren algo más que un salón'), // propuesta
   ocasiones: [
     { icono: 'calendario', titulo: T('Year-end parties', 'Cierres de año'), texto: T('Close the year where nobody expects it.', 'Cierra el año donde nadie lo espera.') },
@@ -156,7 +156,7 @@ export const corporativo: PaginaOcasion = {
   ],
   venueTitulo: T('One venue. No conference room.', 'Un venue. Ninguna sala de conferencias.'), // propuesta
   ambienteTitulo: T('The venue and the menu', 'El venue y el menú'),
-  ambiente: ['karaya-retiro-mesas', 'karaya-retiro-baile', 'karaya-retiro-servicio', 'karaya-retiro-sombreros', 'karaya-retiro-cubierta-inferior', 'karaya-canapes-platano', 'karaya-retiro-cubierta-techada'],
+  ambiente: ['karaya-retiro-pista', 'karaya-retiro-sombreros', 'karaya-retiro-baile', 'karaya-retiro-servicio', 'karaya-retiro-cubierta-inferior', 'karaya-retiro-cubierta-techada'],
   cierre: T('Take the team *out of the office*.', 'Saca al equipo *de la oficina*.'),
   incentivos: true,
   preguntas: [
@@ -196,6 +196,11 @@ export const barco = {
       'El color recorre el nivel inferior: murales originales pintados para el barco enmarcan la barra y la cabina de DJ, así que cada foto a bordo se ve como Karaya y como ningún otro lugar.',
     ),
   },
+  // 16/10: las seis fotos de «Extra A» de marketing (inventario: «Sección The catamaran o galería»).
+  arte: {
+    titular: T('Details and art *on deck*', 'Detalles y arte *en cubierta*'), // propuesta
+    fotos: ['karaya-mesa-detalle', 'karaya-mesa-detalle-2', 'karaya-mural-logo', 'karaya-mural-cubierta', 'karaya-pulpo-tridente', 'karaya-pulpo-detalle'],
+  },
   exterior: {
     antetitulo: T('From the outside', 'Desde fuera'),
     titular: T('Anchored off Bávaro, over the reef', 'Anclado frente a Bávaro, sobre el arrecife'), // propuesta
@@ -221,16 +226,15 @@ export const galeria = {
   // La foto del mural con mesa de gala queda fuera: es lenguaje de boda y lleva texto sobreimpreso.
   categorias: [
     // 02/10: más fotos (galería del cliente) y una categoría de bodas; sin pies, en galería Pinterest.
-    { id: 'venue', titulo: T('The venue', 'El venue'), texto: T('Deck, art and bar. Two decks anchored over the reef off Bávaro.', 'Cubierta, arte y barra. Dos niveles anclados sobre el arrecife frente a Bávaro.'), fotos: ['karaya-punta-cana-aerial-venue-top', 'karaya-zona-aerea', 'karaya-mural-logo', 'karaya-punta-cana-aerial-venue-coast', 'karaya-zona-cubierta', 'karaya-pulpo-tridente', 'karaya-punta-cana-aerial-venue-full', 'karaya-zona-murales', 'karaya-punta-cana-boat-from-water', 'karaya-galeria-proa'] },
+    { id: 'venue', titulo: T('The venue', 'El venue'), texto: T('Deck, art and bar. Two decks anchored over the reef off Bávaro.', 'Cubierta, arte y barra. Dos niveles anclados sobre el arrecife frente a Bávaro.'), fotos: ['karaya-punta-cana-aerial-venue-top', 'karaya-zona-aerea', 'karaya-mural-logo', 'karaya-punta-cana-aerial-venue-coast', 'karaya-mesa-detalle', 'karaya-zona-cubierta', 'karaya-pulpo-tridente', 'karaya-punta-cana-aerial-venue-full', 'karaya-mural-cubierta', 'karaya-zona-murales', 'karaya-mesa-detalle-2', 'karaya-pulpo-detalle', 'karaya-punta-cana-boat-from-water', 'karaya-galeria-proa'] },
     // 15/10 (MA-84): las celebraciones y la fiesta suben; bodas pasa al final y se queda en dos
     // fotos (antes cuatro). Las fotos nuevas de cumpleaños, fiestas privadas y corporativo
     // (Joshuard y Cathy) van en «celebraciones»; cuando haya corporativas, categoría propia.
     // 15/10: llegaron (material del cliente, puntos 2 a 4): celebraciones con fotos reales,
     // categoría de eventos corporativos y canapés en el menú.
-    { id: 'grupos', titulo: T('Celebrations on deck', 'Celebraciones en cubierta'), texto: T('Birthdays, friend groups, company nights. The deck fills up however your group does.', 'Cumpleaños, grupos de amigos, noches de empresa. La cubierta se llena como se llene tu grupo.'), fotos: ['karaya-punta-cana-group-sunset-deck', 'karaya-celebracion-baile-dos', 'karaya-punta-cana-friends-group', 'karaya-celebracion-brindis', 'karaya-celebracion-baile', 'karaya-celebracion-mesa', 'karaya-celebracion-piscina', 'karaya-celebracion-grupo'] },
-    { id: 'corporativo', titulo: T('Corporate events', 'Eventos corporativos'), texto: T('Company retreats, team parties and dinners, on both decks.', 'Retiros de empresa, fiestas de equipo y cenas, en los dos niveles.'), fotos: ['karaya-retiro-mesas', 'karaya-retiro-pista', 'karaya-retiro-sombreros', 'karaya-retiro-baile', 'karaya-retiro-servicio', 'karaya-retiro-cubierta-inferior', 'karaya-retiro-cubierta-techada', 'karaya-fiesta-a-bordo'] },
+    { id: 'grupos', titulo: T('Celebrations on deck', 'Celebraciones en cubierta'), texto: T('Birthdays, friend groups, company nights. The deck fills up however your group does.', 'Cumpleaños, grupos de amigos, noches de empresa. La cubierta se llena como se llene tu grupo.'), fotos: ['karaya-punta-cana-group-sunset-deck', 'karaya-celebracion-brindis', 'karaya-punta-cana-friends-group', 'karaya-celebracion-mesa', 'karaya-celebracion-piscina', 'karaya-celebracion-grupo', 'karaya-celebracion-cubierta', 'karaya-zona-cubierta'] },
     { id: 'fiesta', titulo: T('Traffic Light Party', 'Traffic Light Party'), texto: T('Thursdays on board: the DJ, the deck and the color of the moment.', 'Los jueves a bordo: el DJ, la cubierta y el color del momento.'), fotos: ['karaya-punta-cana-deck-party-crowd', 'karaya-zona-pista', 'karaya-punta-cana-dj-booth', 'karaya-zona-barra', 'karaya-punta-cana-drinks-toast', 'karaya-zona-escalera'] },
-    { id: 'menu', titulo: T("What's on the menu", 'Lo que se sirve'), texto: T('Canapés, croquettes and tacos, served on board.', 'Canapés, croquetas y tacos, servidos a bordo.'), fotos: ['karaya-canapes-platano', 'karaya-croquetas', 'karaya-canapes-platano-detalle', 'karaya-canapes', 'karaya-canapes-bandejas', 'karaya-punta-cana-catering-tacos'] },
+    { id: 'menu', titulo: T("What's on the menu", 'Lo que se sirve'), texto: T('Canapés, sushi and tacos, served on board.', 'Canapés, sushi y tacos, servidos a bordo.'), fotos: ['karaya-canapes', 'karaya-canapes-bandejas', 'karaya-punta-cana-catering-sushi', 'karaya-punta-cana-catering-tacos', 'karaya-punta-cana-catering-canapes'] },
     { id: 'bodas', titulo: T('Weddings', 'Bodas'), texto: T('Ceremonies at the bow, receptions on the lower deck.', 'Ceremonias en la proa, recepciones en el nivel inferior.'), fotos: ['karaya-galeria-boda'] },
   ],
   cierre: T('Ready to book your date?', '¿Listo para reservar tu fecha?'),

@@ -11,7 +11,7 @@
 //   7 · el nombre visible es «Event rewards»;  8 · sin cuentas atrás ni «cupos limitados»;
 //   9 · «Levels are set by the total of your event quote…» en la bajada;
 //  10 · medición: incentivos_vista e incentivos_cta (con el tramo y la variante b2).
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { m as motion } from 'framer-motion';
 import { clsx } from 'clsx';
@@ -109,7 +109,7 @@ export function Incentivos({ destino, origen, nivel = 'h3', className }: Props) 
             <motion.li key={b.id} variants={entradaTarjeta} className="group">
               <div className="relative aspect-[4/3] overflow-hidden rounded-[18px]">
                 <div className="h-full w-full transition-transform duration-[900ms] ease-suave group-hover:scale-[1.06]">
-                  <Foto nombre={b.foto} alt="" sizes="(min-width: 900px) 22vw, 45vw" />
+                  {'fotos' in b && b.fotos ? <Fundido fotos={b.fotos} /> : <Foto nombre={b.foto} alt="" sizes="(min-width: 900px) 22vw, 45vw" />}
                 </div>
                 <span className="absolute left-2.5 top-2.5 flex h-9 w-9 items-center justify-center rounded-full bg-sol text-noche shadow-md">
                   <Icono size={18} aria-hidden />
@@ -121,6 +121,26 @@ export function Incentivos({ destino, origen, nivel = 'h3', className }: Props) 
           );
         })}
       </motion.ul>
+    </div>
+  );
+}
+
+// Varias fotos en una tarjeta (canapés: 03-01, 03-02 y 03-03 del inventario): fundido cada 4 s.
+// Con prefers-reduced-motion se queda la primera (la principal).
+function Fundido({ fotos }: { fotos: readonly string[] }) {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = window.setInterval(() => setI((x) => (x + 1) % fotos.length), 4000);
+    return () => window.clearInterval(id);
+  }, [fotos.length]);
+  return (
+    <div className="relative h-full w-full">
+      {fotos.map((f, k) => (
+        <div key={f} aria-hidden={k !== i} className={clsx('absolute inset-0 transition-opacity duration-1000', k === i ? 'opacity-100' : 'opacity-0')}>
+          <Foto nombre={f} alt="" sizes="(min-width: 900px) 22vw, 45vw" />
+        </div>
+      ))}
     </div>
   );
 }

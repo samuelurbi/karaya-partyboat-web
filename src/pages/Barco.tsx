@@ -83,6 +83,14 @@ export function Barco() {
         </div>
       </section>
 
+      {/* 05b · Detalles y arte en cubierta (16/10: «Extra A» de marketing) */}
+      <section className="relative pb-16 md:pb-24">
+        <div className="contenedor relative">
+          <CabeceraSeccion titulo={barco.arte.titular} />
+          <Mosaico fotos={barco.arte.fotos} titulo={barco.arte.titular} maxColumnas={3} className="mt-10 md:mt-12" />
+        </div>
+      </section>
+
       {/* 06 · Exterior */}
       <section className="relative overflow-hidden pb-16 md:pb-24">
         <SombraPalma variante={4} lado="derecha" intensidad={0.45} className="md:w-[60%]" />
