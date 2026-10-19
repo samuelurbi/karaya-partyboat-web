@@ -18,7 +18,13 @@ Importar el repositorio en Vercel: detecta Vite solo. `vercel.json` fija el buil
 salida `dist/`), la reescritura de rutas a `index.html` (SPA) y la caché de assets, fuentes,
 imágenes y el modelo 3D. No hace falta ninguna variable de entorno.
 
-`public/.htaccess` es el equivalente para Hostinger (Apache), por si se sirve allí.
+`public/.htaccess` es el equivalente para Hostinger (Apache), por si se sirve allí como estático.
+
+## Despliegue (Hostinger, App web de Node.js)
+
+Importar el repositorio público por URL. Framework Express, entry file `server.js`, build
+`npm run build`, Node 22. `npm start` (`server.js`) sirve `dist/` en el `PORT` del entorno con las
+mismas reescrituras de `vercel.json`, la misma caché y 404 reales. Sin variables de entorno.
 
 Este repositorio se publica desde el proyecto completo (que incluye el material del cliente y los
 originales de diseño) con `node scripts/publicar-github.mjs`: sube solo la web a la rama
