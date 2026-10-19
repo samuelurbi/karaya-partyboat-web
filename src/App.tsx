@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { LazyMotion, MotionConfig } from 'framer-motion';
 import { IdiomaProvider } from '@/lib/idioma';
 import { Preloader } from '@/components/Preloader';
+import { Cookies } from '@/components/Cookies';
 import { emitir } from '@/lib/analitica';
 import { HerramientasAgentes } from '@/lib/webmcp';
 import { Home } from '@/pages/Home';
@@ -46,6 +47,7 @@ export default function App() {
           <AlNavegar />
           <HerramientasAgentes />
           <Preloader />
+          <Cookies />
           <Suspense fallback={<div className="min-h-screen bg-fondo" />}>
           <Routes>
             <Route path="/" element={<Home />} />

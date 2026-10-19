@@ -14,6 +14,7 @@ import { cta, marca, menuEventos, navegacion, navegacionSecundaria, pie } from '
 import { useIdioma } from '@/lib/idioma';
 import { enlaceWhatsApp } from '@/lib/whatsapp';
 import { emitir } from '@/lib/analitica';
+import { reabrirCookies } from '@/lib/consentimiento';
 
 // Selector de idioma (30/09, el de Traffic Light): conmutador de pastilla de vidrio con EN/ES
 // dentro; la pastilla clara del idioma activo se DESLIZA hasta él (una sola pieza que se
@@ -342,6 +343,9 @@ function Pie() {
               {t(l.label)}
             </Link>
           ))}
+          <button type="button" onClick={reabrirCookies} className="flex min-h-[44px] items-center hover:text-texto">
+            Cookies
+          </button>
           <a href={`https://instagram.com/${marca.instagram}`} target="_blank" rel="noopener noreferrer" aria-label={`Instagram @${marca.instagram}`} className="flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-texto/15 transition-colors hover:bg-texto hover:text-noche">
             <Instagram size={18} />
           </a>
