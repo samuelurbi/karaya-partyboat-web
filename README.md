@@ -1,4 +1,4 @@
-# Karaya Punta Cana · karayapartyboat.com
+# Karaya Punta Cana · karayapuntacana.com
 
 Web del venue flotante de Karaya Punta Cana: Vite + React 18 + TypeScript + Tailwind 3, con la
 escena 3D del hero y el recorrido del barco en three.js.

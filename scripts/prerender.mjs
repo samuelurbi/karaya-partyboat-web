@@ -2,11 +2,11 @@
 // Open Graph, datos estructurados y un resumen real de la página (para buscadores, redes y agentes
 // que no ejecutan JavaScript; con JavaScript, React lo sustituye). Genera también sitemap.xml y
 // llms.txt con los mismos datos (src/seo/rutas.ts), así nunca se desincronizan de la web.
-// Dominio: SITIO (por defecto https://karayapartyboat.com).
+// Dominio: SITIO (por defecto https://karayapuntacana.com). También genera robots.txt.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createServer } from 'vite';
 
-const SITIO = (process.env.SITIO || 'https://karayapartyboat.com').replace(/\/$/, '');
+const SITIO = (process.env.SITIO || 'https://karayapuntacana.com').replace(/\/$/, '');
 const vite = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' });
 const { rutas, enlaces, datosMarca } = await vite.ssrLoadModule('/src/seo/rutas.ts');
 await vite.close();
@@ -117,6 +117,14 @@ ${rutas.map((r) => `  <url>
 </urlset>
 `);
 
+// robots.txt, con el sitemap en el mismo dominio.
+writeFileSync('dist/robots.txt', `User-agent: *
+Allow: /
+Disallow: /book/confirmation
+
+Sitemap: ${SITIO}/sitemap.xml
+`);
+
 // llms.txt (https://llmstxt.org): qué es la web y dónde está cada cosa, en Markdown.
 const linea = (r) => `- [${r.h1.en}](${url(r.ruta)}): ${r.description.en}`;
 const principales = rutas.filter((r) => !['/terms', '/privacy'].includes(r.ruta));
@@ -137,4 +145,4 @@ ${principales.map(linea).join('\n')}
 ${rutas.filter((r) => ['/terms', '/privacy'].includes(r.ruta)).map(linea).join('\n')}
 `);
 
-console.log(`prerender: ${rutas.length} rutas, sitemap.xml y llms.txt (${SITIO})`);
+console.log(`prerender: ${rutas.length} rutas, sitemap.xml, robots.txt y llms.txt (${SITIO})`);
