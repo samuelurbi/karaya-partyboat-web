@@ -5,6 +5,7 @@
 //   npm run build && npm start      → http://localhost:3000 (o el PORT que se defina)
 import express from 'express';
 import { api } from './server/rutas.js';
+import { admin } from './server/admin.js';
 import { config } from './server/config.js';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join, normalize, relative, resolve } from 'node:path';
@@ -43,6 +44,9 @@ const esArchivo = (p) => existsSync(p) && statSync(p).isFile();
 const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', config.confiarProxy); // detrás del proxy de Hostinger: la IP real para el límite por IP
+
+// Página privada de solicitudes (Basic Auth; sin ADMIN_USER/ADMIN_PASS no existe): server/admin.js.
+app.use('/admin/solicitudes', admin);
 
 // API de formularios (contacto y solicitud): ver server/rutas.js y DERICK.md.
 app.use('/api', express.json({ limit: '32kb' }), api);

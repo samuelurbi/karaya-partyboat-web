@@ -19,11 +19,11 @@ Pasos completos para Samuel o Derick en `PASOS-HOSTINGER-CLIENTE.md` (se entrega
 
 Framework Express, archivo de entrada `server.js`, build `npm run build`, Node 22. `npm start` sirve
 `dist/` con las reescrituras de `vercel.json`, la misma caché, 404 reales y la **API de formularios**
-(`/api/contacto`, `/api/solicitud`, `/api/salud`: MySQL + aviso por correo). Hace falta:
+(`/api/contacto`, `/api/solicitud`, `/api/salud`: MySQL + aviso por correo opcional) y la página privada `/admin/solicitudes`. Hace falta:
 
 - una base MySQL con `schema.sql` importado (tabla común `envios`);
-- las variables de entorno de `.env.example` en hPanel (BD, SMTP del correo de Hostinger, destinatario);
-- comprobar con `/api/salud?correo=1` (todo `ok`).
+- las variables de entorno de `.env.example` en hPanel (BD y `ADMIN_USER`/`ADMIN_PASS`; el SMTP es opcional, hoy sin buzón);
+- comprobar con `/api/salud` (`bd: ok`).
 
 Sin servidor (versión estática en `public_html`) los formularios NO funcionan: usar siempre Node.
 Para Derick (Odoo, pasarela, disponibilidad): `DERICK.md`.

@@ -1,10 +1,12 @@
 // API del formulario de contacto y de la solicitud de cotización (/book/:producto).
-// Cada envío: antispam → valida → guarda en MySQL → avisa por correo. Si falla el guardado o el
-// correo, responde con error (el visitante ve la salida por WhatsApp): nunca un «enviado» falso.
+// Cada envío: antispam → valida → guarda en MySQL → avisa por correo (si hay SMTP configurado).
+// Solo es error si NO se guarda la fila (el visitante ve la salida por WhatsApp): nunca un «enviado»
+// falso. El correo es un extra: si no está configurado o falla, el envío vale y la fila queda con
+// correo = 0 (se ve en /admin/solicitudes).
 // Para conectar Odoo / pasarela de pago, ver DERICK.md.
 import { Router } from 'express';
 import { avisar, smtp } from './correo.js';
-import { faltan } from './config.js';
+import { correoActivo, faltan } from './config.js';
 import { bd, guardarEnvio, marcarCorreo, ponerReferencia } from './db.js';
 import { revisarAntispam } from './antispam.js';
 import { validarContacto, validarSolicitud } from './validar.js';
@@ -51,12 +53,21 @@ async function recibir(req, res, { formulario, validar, correo }) {
   const referencia = formulario === 'solicitud' ? `KY-${String(id).padStart(5, '0')}` : null;
   try {
     if (referencia) await ponerReferencia(id, referencia);
-    await avisar(correo({ id, referencia, idioma, origen, datos, consentimiento }));
-    await marcarCorreo(id, true, referencia);
   } catch (err) {
-    console.error(`[api] envío ${id} guardado pero el correo falló:`, err.code || err.message);
+    console.error(`[api] envío ${id} guardado pero no se pudo poner la referencia:`, err.code || err.message);
+    return fallo(res, 'guardado');
+  }
+  if (!correoActivo()) {
     await marcarCorreo(id, false, referencia).catch(() => {});
-    return fallo(res, 'correo', { id });
+  } else {
+    try {
+      await avisar(correo({ id, referencia, idioma, origen, datos, consentimiento }));
+      await marcarCorreo(id, true, referencia);
+    } catch (err) {
+      // La fila ya está guardada: es un éxito para el visitante; el fallo queda en el log y en correo = 0.
+      console.error(`[api] envío ${id} guardado pero el correo falló:`, err.code || err.message);
+      await marcarCorreo(id, false, referencia).catch(() => {});
+    }
   }
   return res.json({ ok: true, id, ...(referencia ? { referencia, estado: 'solicitada' } : {}) });
 }
@@ -85,10 +96,10 @@ api.post('/solicitud', (req, res) =>
   }),
 );
 
-// Comprobación tras desplegar: /api/salud (variables y base de datos) y /api/salud?correo=1 (SMTP).
-// No enseña ningún valor de configuración.
+// Comprobación tras desplegar: /api/salud (variables y base de datos) y /api/salud?correo=1 (SMTP, si
+// está configurado). No enseña ningún valor de configuración.
 api.get('/salud', async (req, res) => {
-  const r = { ok: true, faltan: faltan(), bd: 'sin probar', correo: 'sin probar' };
+  const r = { ok: true, faltan: faltan(), bd: 'sin probar', correo: correoActivo() ? 'sin probar' : 'desactivado (SMTP sin configurar: los envíos se guardan con correo = 0)' };
   try {
     await bd().query('SELECT 1 FROM envios LIMIT 1');
     r.bd = 'ok';
@@ -96,13 +107,12 @@ api.get('/salud', async (req, res) => {
     r.ok = false;
     r.bd = `error (${err.code || 'desconocido'})`;
   }
-  if (req.query.correo) {
+  if (req.query.correo && correoActivo()) {
     try {
       await smtp().verify();
       r.correo = 'ok';
     } catch (err) {
-      r.ok = false;
-      r.correo = `error (${err.code || 'desconocido'})`;
+      r.correo = `error (${err.code || 'desconocido'}): no bloquea los envíos`;
     }
   }
   if (r.faltan.length) r.ok = false;

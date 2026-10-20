@@ -6,12 +6,20 @@ Estado a 20/10/2026. Todo vive en el Hostinger del cliente (App web de Node.js, 
 
 | Qué | Dónde | Qué hace |
 |---|---|---|
-| Formulario de contacto | `src/pages/Contacto.tsx` → `src/lib/formulario.ts` → `POST /api/contacto` | Guarda en MySQL (`envios`) y avisa por correo |
-| Solicitud de cotización (`/book/private-events`, `/weddings`, `/corporate`) | `src/checkout/Reserva.tsx` → `src/lib/motor/servidor.ts` → `POST /api/solicitud` | Guarda en MySQL y avisa por correo; devuelve la referencia `KY-00042` |
+| Formulario de contacto | `src/pages/Contacto.tsx` → `src/lib/formulario.ts` → `POST /api/contacto` | Guarda en MySQL (`envios`) y, si hay SMTP, avisa por correo |
+| Solicitud de cotización (`/book/private-events`, `/weddings`, `/corporate`) | `src/checkout/Reserva.tsx` → `src/lib/motor/servidor.ts` → `POST /api/solicitud` | Guarda en MySQL y, si hay SMTP, avisa por correo; devuelve la referencia `KY-00042` |
+| Página privada de solicitudes | `server/admin.js` → `/admin/solicitudes` | Lista las filas de `envios` de las 3 webs, con filtros, detalle y CSV (Basic Auth) |
 | Comprobación | `GET /api/salud` (y `?correo=1`) | Variables, base de datos y SMTP, sin enseñar secretos |
 
-Si el guardado o el correo fallan, la web enseña un error con la salida por WhatsApp. Nunca un «enviado» falso, y los
-eventos `form_submit` / `booking_request` del dataLayer solo salen cuando el servidor confirma.
+**El correo es opcional** (hoy karayapuntacana.com no tiene buzón; lo activa Fernando y es de pago):
+- Sin SMTP configurado, el envío es correcto en cuanto se guarda la fila: el visitante ve «enviado», se lanza el evento de éxito y la fila queda con `correo = 0`.
+- Con SMTP configurado que falla, también vale si la fila se guardó: se registra el fallo en el log y `correo = 0`.
+- Solo es error (con la salida por WhatsApp) cuando **no se guarda** la fila. Nunca un «enviado» falso, y los eventos `form_submit` / `booking_request` solo salen cuando el servidor confirma.
+- Para activar el correo cuando exista el buzón: rellenar `SMTP_*`, `MAIL_FROM` y `MAIL_TO` y Redesplegar; `/api/salud?correo=1` lo comprueba. Los envíos que no avisaron: `SELECT * FROM envios WHERE correo = 0;` o el filtro de `/admin/solicitudes`.
+
+## Página privada `/admin/solicitudes`
+
+Servida por Express (`server/admin.js`), con Basic Auth: usuario y contraseña en las variables `ADMIN_USER` y `ADMIN_PASS`. Si no están definidas, la ruta da 404. Lista los envíos de las 3 webs (más nuevos primero) con filtro por web y formulario, el detalle de los datos y `Exportar CSV` (`/admin/solicitudes/csv`, hasta 5.000 filas). Lleva `noindex`, no guarda nada en el navegador, escapa todo el contenido y limita las peticiones (120 por minuto y bloqueo de 15 minutos tras 10 intentos fallidos por IP). Las landings de agentes aparecen ahí en cuanto escriban en `envios` con su `sitio`.
 
 ## Qué es DEMOSTRACIÓN (lo conectas tú)
 
@@ -42,7 +50,7 @@ eventos `form_submit` / `booking_request` del dataLayer solo salen cuando el ser
 `POST /api/solicitud` (JSON):
 `producto` (`private-events` | `weddings` | `corporate`), `fecha`, `personas`, `horas`, `ocasion`, `extras` (nombres en inglés, p. ej. «DJ», «Mixology bar»), `incentivo` (`{ nivel: 10000|20000|30000, preferidos: [] }`, el bloque «Event rewards», opcional), `cliente` (`nombre`, `apellido`, `email`, `prefijo`, `telefono`, `empresa`), `aceptaTerminos`, `aceptaComunicaciones`, `consentimientoTexto`, `totalMostrado`, `idioma`, `origen`, `utm`, `sitio_web`, `ms`.
 
-Respuesta correcta: `{ ok: true, id, referencia, estado: 'solicitada' }`. Errores: `{ ok: false, error }` con `invalido` (400, más `campo`), `rechazado` (422, antispam), `limite` (429), `guardado` (500), `correo` (502, la fila queda guardada con `correo = 0`), `config` (503, falta una variable).
+Respuesta correcta: `{ ok: true, id, referencia, estado: 'solicitada' }`. Errores: `{ ok: false, error }` con `invalido` (400, más `campo`), `rechazado` (422, antispam), `limite` (429), `guardado` (500, la fila no se guardó) y `config` (503, falta una variable de la base). Un fallo del correo ya no es error.
 
 ## Base de datos
 
@@ -54,7 +62,7 @@ Campo trampa (`sitio_web`), tiempo mínimo (3 s, `TIEMPO_MINIMO_MS`) y límite p
 
 ## Configuración (variables de entorno en hPanel; plantilla `.env.example`)
 
-`SITIO_ID`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM`, `MAIL_TO`, `HASH_SALT` y, opcionales, `LIMITE_POR_HORA`, `TIEMPO_MINIMO_MS`, `TRUST_PROXY`. Los valores del `.env.example` son de ejemplo: la cuenta que envía y el destinatario reales aún no se conocen.
+`SITIO_ID`, `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` (o `DB_PASS`), `DB_NAME`, `ADMIN_USER`, `ADMIN_PASS`, `HASH_SALT` y, **opcionales (correo)**, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD` (o `SMTP_PASS`), `MAIL_FROM` (o `AVISOS_DESDE`), `MAIL_TO` (o `AVISOS_PARA`), y también opcionales, `LIMITE_POR_HORA`, `TIEMPO_MINIMO_MS`, `TRUST_PROXY`. Los valores del `.env.example` son de ejemplo.
 
 ## Pruebas en local
 
@@ -62,5 +70,5 @@ Campo trampa (`sitio_web`), tiempo mínimo (3 s, `TIEMPO_MINIMO_MS`) y límite p
 npm run build
 node scripts/smtp-prueba.mjs      # SMTP de pruebas (guarda los correos en .pruebas/correos/)
 # MySQL/MariaDB local con schema.sql importado, y un .env a partir de .env.example
-node scripts/qa-formularios.mjs   # contacto y solicitud de verdad (BD, correo, errores, antispam) a 1440 y 390
+node scripts/qa-formularios.mjs   # contacto, solicitud y /admin de verdad (BD, correo, sin SMTP, SMTP caído, BD caída, antispam) a 1440 y 390
 ```

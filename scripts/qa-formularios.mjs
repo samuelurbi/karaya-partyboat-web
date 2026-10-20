@@ -24,8 +24,14 @@ const arrancar = (puerto, extra = {}) => {
   const p = spawn(process.execPath, ['server.js'], { env: { ...process.env, PORT: String(puerto), ...extra }, stdio: 'ignore' });
   return p;
 };
-const BUENO = 'http://localhost:3301', SIN_BD = 'http://localhost:3302', SIN_SMTP = 'http://localhost:3303';
-const servidores = [arrancar(3301), arrancar(3302, { DB_PORT: '3399' }), arrancar(3303, { SMTP_PORT: '2599' })];
+const BUENO = 'http://localhost:3301', SIN_BD = 'http://localhost:3302', SMTP_ROTO = 'http://localhost:3303', SIN_SMTP = 'http://localhost:3304';
+const ADMIN = { ADMIN_USER: 'karaya', ADMIN_PASS: 'clave-de-prueba-local-1234' };
+const servidores = [
+  arrancar(3301, ADMIN), // base y correo bien, con admin
+  arrancar(3302, { DB_PORT: '3399', ...ADMIN }), // base caída
+  arrancar(3303, { SMTP_PORT: '2599', ...ADMIN }), // SMTP configurado pero caído
+  arrancar(3304, { SMTP_HOST: '', SMTP_USER: '', SMTP_PASSWORD: '', ADMIN_USER: '', ADMIN_PASS: '' }), // sin SMTP y sin admin
+];
 await espera(2500);
 
 const bd = await mysql.createConnection({ ...config.db, charset: 'utf8mb4' });
@@ -156,12 +162,12 @@ try {
     await ctx.close();
   }
 
-  // ── 4. Fallos: el visitante ve un error con WhatsApp, nunca un «enviado» falso ──
-  for (const [nombre, servidor, esperaCorreo0] of [['base de datos caída', SIN_BD, false], ['SMTP caído', SIN_SMTP, true]]) {
-    console.log(`\n── ${nombre} ──`);
-    const ctx = await navegador.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce', locale: 'en-US', userAgent: `KarayaQA-fallo/${nombre}` });
+  // ── 4. Base caída: el visitante ve un error con WhatsApp, nunca un «enviado» falso ──
+  {
+    console.log('\n── base de datos caída ──');
+    const ctx = await navegador.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce', locale: 'en-US', userAgent: 'KarayaQA-fallo/bd' });
     const page = await ctx.newPage();
-    await page.goto(`${servidor}/contact?notas=0&lang=en`, { waitUntil: 'load' });
+    await page.goto(`${SIN_BD}/contact?notas=0&lang=en`, { waitUntil: 'load' });
     await page.locator('#formulario').scrollIntoViewIfNeeded();
     await page.waitForTimeout(3300);
     await page.locator('input[name=name]').fill('Prueba fallo');
@@ -175,19 +181,112 @@ try {
     const ev = await page.evaluate(() => (window.dataLayer || []).map((e) => e.event).filter(Boolean));
     ok(!ev.includes('form_submit'), 'contacto: form_submit NO se lanza');
     ok((await page.locator('input[name=name]').inputValue()) === 'Prueba fallo', 'contacto: los datos siguen en el formulario para reintentar');
-    // Solicitud
-    await camino(page, servidor);
+    await camino(page, SIN_BD);
     await page.getByRole('alert').filter({ hasText: 'could not send your request' }).waitFor({ timeout: 10000 });
     const wa2 = await page.getByRole('alert').getByRole('link', { name: /WhatsApp/ }).first().getAttribute('href');
     ok(/wa\.me/.test(wa2) && !/confirmation/.test(page.url()), 'solicitud: error con WhatsApp y sin pasar a la confirmación');
     const ev2 = await page.evaluate(() => (window.dataLayer || []).map((e) => e.event).filter(Boolean));
     ok(!ev2.includes('booking_request'), 'solicitud: booking_request NO se lanza');
-    if (esperaCorreo0) {
-      const caidas = await filas("SELECT COUNT(*) n FROM envios WHERE user_agent LIKE 'KarayaQA-fallo/%' AND correo = 0");
-      ok(caidas[0].n >= 2, `SMTP caído: las ${caidas[0].n} filas quedan guardadas y marcadas correo=0 para revisarlas`);
-    }
+    ok((await filas("SELECT COUNT(*) n FROM envios WHERE user_agent = 'KarayaQA-fallo/bd'"))[0].n === 0, 'no quedó ninguna fila');
+    ok((await (await fetch(`${SIN_BD}/api/salud`)).json()).bd.startsWith('error'), '/api/salud avisa de la base caída');
     await ctx.close();
   }
+
+  // ── 4b. Sin SMTP o con SMTP caído: vale en cuanto se guarda la fila (correo = 0) ──
+  for (const [nombre, servidor] of [['SMTP sin configurar', SIN_SMTP], ['SMTP configurado pero caído', SMTP_ROTO]]) {
+    console.log(`\n── ${nombre} ──`);
+    const agente = `KarayaQA-sincorreo/${nombre}`;
+    const ctx = await navegador.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce', locale: 'en-US', userAgent: agente });
+    const page = await ctx.newPage();
+    const consola = [];
+    page.on('pageerror', (e) => consola.push(String(e)));
+    await page.goto(`${servidor}/contact?notas=0&lang=en`, { waitUntil: 'load' });
+    await page.locator('#formulario').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(3300);
+    await page.locator('input[name=name]').fill('Sin correo');
+    await page.locator('input[name=contact]').fill('sincorreo@test.com');
+    await page.locator('select[name=occasion]').selectOption('Wedding');
+    await page.getByRole('button', { name: /Send/i }).click();
+    await page.getByRole('status').waitFor({ timeout: 15000 });
+    const ev = await page.evaluate(() => (window.dataLayer || []).map((e) => e.event).filter(Boolean));
+    ok(ev.includes('form_submit'), 'contacto: «enviado» y form_submit (la fila se guardó)');
+    await camino(page, servidor);
+    await page.waitForURL(/\/book\/confirmation/, { timeout: 15000 });
+    const ref = (await page.locator('[data-referencia]').innerText()).trim();
+    const ev2 = await page.evaluate(() => (window.dataLayer || []).filter((e) => e.event === 'booking_request'));
+    ok(/^KY-\d{5}$/.test(ref) && ev2.length === 1, `solicitud: confirmación con referencia ${ref} y booking_request`);
+    const f = await filas('SELECT formulario, referencia, correo FROM envios WHERE user_agent = ? ORDER BY id', [agente]);
+    ok(f.length === 2 && f.every((x) => x.correo === 0) && f[1].referencia === ref, `dos filas guardadas con correo = 0 (${f.map((x) => x.formulario).join(', ')})`);
+    const salud = await (await fetch(`${servidor}/api/salud?correo=1`)).json();
+    ok(salud.ok === true && (nombre.includes('sin configurar') ? /desactivado/.test(salud.correo) : /^error/.test(salud.correo)), `/api/salud sigue ok: correo «${salud.correo}»`);
+    ok(consola.length === 0, 'sin errores de consola');
+    await ctx.close();
+  }
+
+  // ── 6. Página privada /admin/solicitudes ──
+  console.log('\n── admin ──');
+  await bd.query(
+    "INSERT INTO envios (sitio, formulario, idioma, datos, consentimiento, origen, user_agent, correo) VALUES ('karayatravelagents.com','agentes','en',?,?,'landing','KarayaQA-admin',0), ('hispaniolatravelagents.com','agentes','es',?,?,'landing','KarayaQA-admin',1), ('karayapuntacana.com','contacto','en',?,?,'xss','KarayaQA-admin',0)",
+    [
+      JSON.stringify({ nombre: 'Agente Karaya', email: 'agente@viajes.com', agencia: '=HYPERLINK("http://x")' }), JSON.stringify({ aceptado: true, texto: 'ok', fecha: new Date().toISOString() }),
+      JSON.stringify({ nombre: 'Agente Hispaniola', email: 'h@viajes.com' }), JSON.stringify({ aceptado: true, texto: 'ok', fecha: new Date().toISOString() }),
+      JSON.stringify({ nombre: '<script>window.__xss=1</script>', contacto: 'x@y.com', ocasion: 'Other' }), JSON.stringify({ aceptado: true, texto: 'ok', fecha: new Date().toISOString() }),
+    ],
+  );
+  const auth = 'Basic ' + Buffer.from(`${ADMIN.ADMIN_USER}:${ADMIN.ADMIN_PASS}`).toString('base64');
+  const get = (base, ruta, cab = {}) => fetch(base + ruta, { headers: cab, redirect: 'manual' });
+  let r1 = await get(SIN_SMTP, '/admin/solicitudes', { authorization: auth });
+  ok(r1.status === 404, `sin ADMIN_USER/ADMIN_PASS la ruta no existe (${r1.status})`);
+  r1 = await get(BUENO, '/admin/solicitudes');
+  ok(r1.status === 401 && /Basic/.test(r1.headers.get('www-authenticate')), `sin credenciales → 401 con Basic (${r1.status})`);
+  r1 = await get(BUENO, '/admin/solicitudes', { authorization: 'Basic ' + Buffer.from('karaya:mala').toString('base64') });
+  ok(r1.status === 401, `clave mala → ${r1.status}`);
+  r1 = await get(BUENO, '/admin/solicitudes/csv');
+  ok(r1.status === 401, 'el CSV también exige credenciales');
+  r1 = await get(BUENO, '/admin/solicitudes', { authorization: auth });
+  const html = await r1.text();
+  ok(r1.status === 200 && /noindex/.test(r1.headers.get('x-robots-tag') || '') && /<meta name="robots" content="noindex/.test(html), 'con credenciales → 200, con noindex en cabecera y en la página');
+  ok(/karayatravelagents\.com/.test(html) && /hispaniolatravelagents\.com/.test(html) && /karayapuntacana\.com/.test(html), 'lista las filas de las 3 webs');
+  ok(!html.includes('<script>window.__xss') && html.includes('&lt;script&gt;window.__xss'), 'el contenido de los envíos va escapado (sin XSS)');
+  const orden = [...html.matchAll(/<span class="id">#(\d+)/g)].map((m) => Number(m[1]));
+  ok(orden.length > 3 && orden.every((n, i) => i === 0 || orden[i - 1] > n), `más nuevas primero (${orden.slice(0, 5).join(', ')}…)`);
+  r1 = await get(BUENO, '/admin/solicitudes?sitio=hispaniolatravelagents.com', { authorization: auth });
+  const h2 = await r1.text();
+  ok(/Agente Hispaniola/.test(h2) && !/Agente Karaya/.test(h2) && !/Lucía/.test(h2), 'filtro por sitio');
+  r1 = await get(BUENO, '/admin/solicitudes?formulario=solicitud', { authorization: auth });
+  const h3 = await r1.text();
+  ok(/KY-\d{5}/.test(h3) && !/Agente Karaya/.test(h3), 'filtro por formulario');
+  r1 = await get(BUENO, '/admin/solicitudes/csv?sitio=karayatravelagents.com', { authorization: auth });
+  const csv = await r1.text();
+  ok(/text\/csv/.test(r1.headers.get('content-type')) && /attachment/.test(r1.headers.get('content-disposition')) && csv.split('\r\n')[0].includes('datos') && csv.includes('Agente Karaya') && !csv.includes('Agente Hispaniola'), 'CSV filtrado con cabecera y descarga');
+  ok(csv.includes("'=HYPERLINK") === false && !/(^|,)"=HYPERLINK/.test(csv), 'CSV: sin celdas que empiecen por «=» (la fórmula va dentro del JSON entre comillas)');
+  r1 = await get(BUENO, '/admin/solicitudes?sitio=x%27%20OR%201=1--', { authorization: auth });
+  ok(r1.status === 200 && /No hay envíos/.test(await r1.text()), 'un filtro con comillas no rompe la consulta (parámetros)');
+  // fuerza bruta
+  let ult;
+  for (let i = 0; i < 12; i++) ult = await get(SMTP_ROTO, '/admin/solicitudes', { authorization: 'Basic ' + Buffer.from(`karaya:x${i}`).toString('base64') });
+  ok(ult.status === 429, `12 intentos fallidos seguidos → ${ult.status} (bloqueo)`);
+
+  for (const [w, h] of [[1440, 900], [390, 844]]) {
+    const ctx = await navegador.newContext({ viewport: { width: w, height: h }, httpCredentials: { username: ADMIN.ADMIN_USER, password: ADMIN.ADMIN_PASS } });
+    const page = await ctx.newPage();
+    const consola = [];
+    page.on('pageerror', (e) => consola.push(String(e)));
+    page.on('console', (m) => m.type() === 'error' && consola.push(m.text()));
+    await page.goto(`${BUENO}/admin/solicitudes`, { waitUntil: 'load' });
+    await page.locator('details > summary').first().click();
+    const m = await page.evaluate(() => ({
+      desborde: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      pequenos: [...document.querySelectorAll('a,button,select,summary')].filter((e) => e.getBoundingClientRect().height < 44 && e.getBoundingClientRect().height > 0).length,
+      xss: window.__xss ?? null,
+    }));
+    ok(m.desborde <= 0 && m.pequenos === 0 && m.xss === null, `admin a ${w}: sin desborde (${m.desborde}), zonas de toque < 44 px: ${m.pequenos}, XSS: ${m.xss}`);
+    ok(consola.length === 0, `admin a ${w}: sin errores de consola`);
+    await page.screenshot({ path: `C:/Users/kevin/AppData/Local/Temp/admin-${w}.png` });
+    await ctx.close();
+  }
+  await bd.query("DELETE FROM envios WHERE user_agent = 'KarayaQA-admin'");
+
   await navegador.close();
 
   // ── 5. Límite por IP ──

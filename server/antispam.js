@@ -32,3 +32,21 @@ setInterval(() => {
   const ahora = Date.now();
   for (const [h, l] of golpes) if (l.every((t) => ahora - t >= HORA)) golpes.delete(h);
 }, 10 * 60 * 1000).unref();
+
+// Límite genérico por IP (hash) y clave, en memoria: lo usa la página de admin.
+const cubos = new Map(); // `${clave}:${hash}` -> [instantes]
+export function contar(req, clave, ventanaMs) {
+  const k = `${clave}:${hashIp(req.ip || req.socket?.remoteAddress || '')}`;
+  const ahora = Date.now();
+  const l = (cubos.get(k) ?? []).filter((t) => ahora - t < ventanaMs);
+  l.push(ahora);
+  cubos.set(k, l);
+  return l.length;
+}
+export function reiniciar(req, clave) {
+  cubos.delete(`${clave}:${hashIp(req.ip || req.socket?.remoteAddress || '')}`);
+}
+setInterval(() => {
+  const ahora = Date.now();
+  for (const [k, l] of cubos) if (l.every((t) => ahora - t >= HORA)) cubos.delete(k);
+}, 10 * 60 * 1000).unref();
