@@ -1,5 +1,5 @@
 // Toda imagen pasa por aquí. En Hostinger se sirven desde /img (public/img); si algún
-// día se publica en GoHighLevel, se cambia VITE_ASSETS_BASE y nada más.
+// día se sirven desde otro sitio, se cambia VITE_ASSETS_BASE y nada más.
 // Cada foto existe en 1600 px y en 800 px (-800), generadas por scripts/preparar-assets.py.
 export const BASE_IMG = (import.meta.env.VITE_ASSETS_BASE as string | undefined) ?? '/img';
 

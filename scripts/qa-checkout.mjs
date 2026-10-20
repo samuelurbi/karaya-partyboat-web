@@ -92,7 +92,8 @@ for (const [w, h] of [
   await page.locator('input[type=checkbox]').last().check();
   const texto = (await primario().innerText()).trim();
   ok(/Request my quote/.test(texto), `botón final: «${texto}»`);
-  ok((await page.locator('text=From US$95 pp').filter({ visible: true }).count()) > 0, 'resumen: «From US$95», sin total');
+  ok((await page.locator('text=From US$95').filter({ visible: true }).count()) > 0, 'resumen: «From US$95», sin total');
+  await page.waitForTimeout(3200); // antispam del servidor: mínimo 3 s desde que se abre el formulario
   await primario().click();
   await page.waitForURL(/\/book\/confirmation/, { timeout: 8000 });
   await page.waitForTimeout(300);

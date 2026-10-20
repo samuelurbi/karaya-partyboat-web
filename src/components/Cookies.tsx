@@ -87,12 +87,7 @@ export function Cookies() {
         conBarra ? 'bottom-[calc(env(safe-area-inset-bottom)+100px)] md:bottom-5' : 'bottom-[calc(env(safe-area-inset-bottom)+12px)] md:bottom-5',
       )}
     >
-      <p className="text-[14px] leading-snug text-texto-2">
-        {t(tx.texto)}{' '}
-        <Link to="/privacy" className="font-semibold text-texto underline decoration-sol decoration-2 underline-offset-4">
-          {t(tx.mas)}
-        </Link>
-      </p>
+      <p className="text-[14px] leading-snug text-texto-2">{t(tx.texto)}</p>
       {panel ? (
         <div className="mt-2 divide-y divide-texto/10">
           <Interruptor activo={analitica} cambiar={setAnalitica} titulo={t(tx.analitica)} sub={t(tx.analiticaSub)} />
@@ -112,11 +107,20 @@ export function Cookies() {
             <button type="button" onClick={() => guardarEleccion({ analitica: false, marketing: false })} className={clsx(clasesBoton('secundario', 'sm'), 'flex-1')}>
               {t(tx.rechazar)}
             </button>
-            <button type="button" onClick={() => setPanel(true)} className="min-h-[44px] px-1 text-[14px] font-semibold text-texto-2 underline decoration-texto/30 underline-offset-4 hover:text-texto">
-              {t(tx.preferencias)}
-            </button>
           </>
         )}
+      </div>
+      <div className="-mb-2 mt-1 flex items-center justify-between gap-3">
+        {panel ? (
+          <span />
+        ) : (
+          <button type="button" onClick={() => setPanel(true)} className="min-h-[44px] pr-2 text-[14px] font-semibold text-texto underline decoration-texto/30 underline-offset-4 hover:decoration-sol">
+            {t(tx.preferencias)}
+          </button>
+        )}
+        <Link to="/privacy" className="flex min-h-[44px] items-center pl-2 text-[14px] font-semibold text-texto-2 underline decoration-texto/30 underline-offset-4 hover:text-texto hover:decoration-sol">
+          {t(tx.mas)}
+        </Link>
       </div>
     </div>
   );

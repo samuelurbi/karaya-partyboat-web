@@ -4,8 +4,10 @@
 //
 //   npm run build && npm start      → http://localhost:3000 (o el PORT que se defina)
 import express from 'express';
+import { api } from './server/rutas.js';
+import { config } from './server/config.js';
 import { existsSync, readFileSync, statSync } from 'node:fs';
-import { join, normalize, resolve } from 'node:path';
+import { join, normalize, relative, resolve } from 'node:path';
 
 const raiz = import.meta.dirname;
 const dist = resolve(raiz, 'dist');
@@ -40,6 +42,14 @@ const esArchivo = (p) => existsSync(p) && statSync(p).isFile();
 
 const app = express();
 app.disable('x-powered-by');
+app.set('trust proxy', config.confiarProxy); // detrás del proxy de Hostinger: la IP real para el límite por IP
+
+// API de formularios (contacto y solicitud): ver server/rutas.js y DERICK.md.
+app.use('/api', express.json({ limit: '32kb' }), api);
+app.use('/api', (err, _req, res, _next) => {
+  // JSON mal formado o demasiado grande
+  res.status(err.status === 413 ? 413 : 400).json({ ok: false, error: 'invalido' });
+});
 
 // Rutas limpias: /corporate y /corporate/ sirven dist/corporate/index.html sin redirigir.
 app.use((req, res, next) => {
@@ -57,7 +67,7 @@ app.use((req, res, next) => {
   const candidato = esArchivo(archivo) ? archivo : esArchivo(join(archivo, 'index.html')) ? join(archivo, 'index.html') : null;
   if (!candidato) return next();
   cabeceras(res, candidato);
-  res.sendFile(candidato, { dotfiles: 'deny' });
+  res.sendFile(relative(dist, candidato), { root: dist, dotfiles: 'deny' }); // con root: un directorio con punto en la ruta del proyecto no da 403
 });
 
 // 404 real (con la página 404 de la web si la trae).
@@ -66,7 +76,7 @@ app.use((req, res) => {
   res.status(404);
   if (esArchivo(pagina)) {
     res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-    res.sendFile(pagina);
+    res.sendFile('404.html', { root: dist });
   } else {
     res.type('text').send('404 · Not found');
   }

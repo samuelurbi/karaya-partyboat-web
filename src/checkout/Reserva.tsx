@@ -8,7 +8,7 @@
 // al botón de pagar, estado guardado (recargar no pierde nada) y la ayuda por WhatsApp al
 // final del recorrido. Nada de urgencia falsa: «pocas plazas» solo si el motor lo dice.
 // El cobro y la disponibilidad reales los conecta Derick en lib/motor/.
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { clsx } from 'clsx';
@@ -112,7 +112,9 @@ function Checkout({ id }: { id: IdProducto }) {
   const paso = Math.min(3, Math.max(1, Number(params.get('paso')) || 1));
   const [tocados, setTocados] = useState<Record<string, boolean>>({});
   const [enviando, setEnviando] = useState(false);
-  const [fallo, setFallo] = useState<null | 'fecha_no_disponible' | 'red' | 'desconocido' | 'pago_rechazado'>(null);
+  const [fallo, setFallo] = useState<null | 'fecha_no_disponible' | 'red' | 'envio' | 'desconocido' | 'pago_rechazado'>(null);
+  const [trampa, setTrampa] = useState(''); // campo trampa (antispam): un humano no lo rellena
+  const montado = useRef(Date.now());
   const [resumenAbierto, setResumenAbierto] = useState(false);
 
   useEffect(() => {
@@ -168,7 +170,7 @@ function Checkout({ id }: { id: IdProducto }) {
         fecha: datos.fecha!,
         personas: datos.personas,
         horas: datos.horas,
-        extras: datos.extras.length ? datos.extras : undefined,
+        extras: datos.extras.length ? datos.extras.map((e) => extrasDisponibles.find((x) => x.id === e)?.en ?? e) : undefined,
         incentivo: datos.nivel ? { nivel: datos.nivel, preferidos: datos.preferidos } : undefined,
         ocasion: datos.ocasion || undefined,
         cliente: { nombre: datos.nombre.trim(), apellido: datos.apellido.trim(), email: datos.email.trim(), prefijo: datos.prefijo, telefono: datos.telefono.trim(), empresa: datos.empresa.trim() || undefined },
@@ -177,6 +179,10 @@ function Checkout({ id }: { id: IdProducto }) {
         total: 0,
         metodo: 'solicitud',
         origen: params.get('origen') ?? 'directo',
+        totalMostrado: tx.aMedida.en, // en solicitud no hay total: se enseña «From US$95» y lo cotiza el equipo
+        aceptaTerminos: datos.aceptaTerminos,
+        consentimientoTexto: t(tx.terminos).replace('{terms}', t(tx.terminosLink)).replace('{privacy}', t(tx.privacidadLink)),
+        antispam: { trampa, ms: Date.now() - montado.current },
       })
       .catch(() => ({ ok: false as const, error: 'red' as const }));
     setEnviando(false);
@@ -304,6 +310,13 @@ function Checkout({ id }: { id: IdProducto }) {
                       ))}
                   </dl>
 
+                  {/* Campo trampa (antispam): fuera de pantalla, sin foco y ignorado por los lectores. */}
+                  <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                    <label>
+                      Website
+                      <input type="text" name="sitio_web" tabIndex={-1} autoComplete="off" value={trampa} onChange={(e) => setTrampa(e.target.value)} />
+                    </label>
+                  </div>
                   <label className="mt-6 flex min-h-[44px] cursor-pointer items-start gap-3">
                     <input
                       type="checkbox"
@@ -339,7 +352,7 @@ function Checkout({ id }: { id: IdProducto }) {
                     <div role="alert" className="mt-5 flex gap-3 rounded-lg border-2 border-error/30 bg-error/5 p-4 text-[15px]">
                       <AlertCircle size={20} className="mt-0.5 shrink-0 text-error" />
                       <div>
-                        <p className="font-medium">{t(fallo === 'fecha_no_disponible' ? tx.noDisponible : tx.errorRed)}</p>
+                        <p className="font-medium">{t(fallo === 'fecha_no_disponible' ? tx.noDisponible : fallo === 'envio' ? tx.errorEnvio : tx.errorRed)}</p>
                         <a href={enlaceWhatsApp('checkout-error', idioma, contexto)} target="_blank" rel="noopener noreferrer" onClick={() => emitir('click_whatsapp_help', { origen: 'checkout-error' })} className="mt-2 inline-flex min-h-[44px] items-center gap-2 font-semibold text-mar-texto underline">
                           <MessageCircle size={17} /> {t({ en: 'Get help on WhatsApp', es: 'Pide ayuda por WhatsApp' })}
                         </a>

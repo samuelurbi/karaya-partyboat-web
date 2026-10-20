@@ -7,3 +7,10 @@ Thumbs.db
 # Capturas de QA (se regeneran con los scripts)
 scripts/capturas/
 __pycache__/
+
+# Credenciales: nunca al repo
+.env
+.env.*
+!.env.example
+config.php
+.pruebas/

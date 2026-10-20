@@ -21,11 +21,17 @@ export type Pedido = {
   total: number; // US$, calculado en el cliente; el backend debe recalcularlo
   metodo: 'tarjeta' | 'paypal' | 'solicitud';
   origen: string; // utm/entrada, para atribución
+  // Solicitud (/api/solicitud): lo que se enseñó, el texto aceptado y el antispam. Ver DERICK.md.
+  totalMostrado?: string; // p. ej. «From US$95» (en solicitud no hay total: lo cotiza el equipo)
+  aceptaTerminos?: boolean;
+  consentimientoTexto?: string; // el texto literal que aceptó el visitante
+  antispam?: { trampa: string; ms: number }; // campo trampa vacío y milisegundos hasta enviar
+  utm?: Record<string, string>;
 };
 
 export type Resultado =
   | { ok: true; referencia: string; estado: 'pagada' | 'solicitada' }
-  | { ok: false; error: 'pago_rechazado' | 'fecha_no_disponible' | 'red' | 'desconocido'; mensaje?: string };
+  | { ok: false; error: 'pago_rechazado' | 'fecha_no_disponible' | 'red' | 'envio' | 'desconocido'; mensaje?: string };
 
 export interface Motor {
   nombre: string;

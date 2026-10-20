@@ -7,7 +7,8 @@
 import { useId, useRef, useState } from 'react';
 import { AnimatePresence, m as motion } from 'framer-motion';
 import { clsx } from 'clsx';
-import { ArrowUpRight, CheckCircle2, ChevronDown, Instagram, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { AlertCircle, ArrowUpRight, CheckCircle2, ChevronDown, Instagram, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { Shell } from '@/components/Shell';
 import { Mural, SombraPalma } from '@/components/marca';
 import { HeroFoto } from '@/components/bloques';
@@ -33,6 +34,9 @@ export function Contacto() {
   const [datos, setDatos] = useState(vacio);
   const [tocados, setTocados] = useState<Record<string, boolean>>({});
   const [estado, setEstado] = useState<'editando' | 'enviando' | 'enviado'>('editando');
+  const [fallo, setFallo] = useState(false);
+  const [trampa, setTrampa] = useState(''); // campo trampa: un humano no lo ve ni lo rellena
+  const desde = useRef(Date.now());
   const empezado = useRef(false);
   const idOcasion = useId();
   const idMensaje = useId();
@@ -59,7 +63,15 @@ export function Contacto() {
       return;
     }
     setEstado('enviando');
-    await enviarContacto({ ...datos, idioma, origen: new URLSearchParams(window.location.search).get('utm_content') ?? 'contacto' });
+    setFallo(false);
+    const consentimientoTexto = t(f.privacidad).replace('{privacy}', t(f.privacidadLink));
+    const r = await enviarContacto({ ...datos, idioma, origen: new URLSearchParams(window.location.search).get('utm_content') ?? 'contacto', consentimientoTexto, trampa, ms: Date.now() - desde.current });
+    // Solo con la confirmación del servidor (guardado y correo): nunca un «enviado» falso.
+    if (!r.ok) {
+      setFallo(true);
+      setEstado('editando');
+      return;
+    }
     emitir('form_submit', { formulario: 'contacto', ocasion: datos.ocasion });
     setEstado('enviado');
   };
@@ -163,6 +175,7 @@ export function Contacto() {
                       setDatos(vacio);
                       setTocados({});
                       setEstado('editando');
+                      desde.current = Date.now();
                     }}
                     className="mt-6 min-h-[44px] font-semibold text-mar-texto underline"
                   >
@@ -227,13 +240,43 @@ export function Contacto() {
                       <textarea id={idMensaje} name="message" rows={4} value={datos.mensaje} onChange={(e) => cambiar('mensaje', e.target.value)} className="w-full rounded-lg border-2 border-texto/15 bg-fondo-2 px-4 py-3 text-[16px] outline-none hover:border-texto/35 focus:border-mar" />
                     </div>
                   </div>
+                  {/* Campo trampa (antispam): fuera de pantalla, sin foco y ignorado por los lectores. */}
+                  <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                    <label>
+                      Website
+                      <input type="text" name="sitio_web" tabIndex={-1} autoComplete="off" value={trampa} onChange={(e) => setTrampa(e.target.value)} />
+                    </label>
+                  </div>
+                  <p className="mt-4 text-[14px] text-texto-2">
+                    {t(f.privacidad)
+                      .split(/(\{privacy\})/)
+                      .map((trozo, i) =>
+                        trozo === '{privacy}' ? (
+                          <Link key={i} to="/privacy" target="_blank" className="-my-3 inline-block py-3 font-semibold text-mar-texto underline">
+                            {t(f.privacidadLink)}
+                          </Link>
+                        ) : (
+                          <span key={i}>{trozo}</span>
+                        ),
+                      )}
+                  </p>
+                  {fallo ? (
+                    <div role="alert" className="mt-4 flex gap-3 rounded-lg border-2 border-error/30 bg-error/5 p-4 text-[15px]">
+                      <AlertCircle size={20} className="mt-0.5 shrink-0 text-error" />
+                      <div>
+                        <p className="font-medium">{t(f.errorEnvio)}</p>
+                        <a href={enlaceWhatsApp('contacto-error', idioma)} target="_blank" rel="noopener noreferrer" onClick={() => emitir('click_whatsapp_help', { origen: 'contacto-error' })} className="mt-2 inline-flex min-h-[44px] items-center gap-2 font-semibold text-mar-texto underline">
+                          <MessageCircle size={17} /> {t({ en: 'Get help on WhatsApp', es: 'Pide ayuda por WhatsApp' })}
+                        </a>
+                      </div>
+                    </div>
+                  ) : null}
                   <div className="mt-6 flex flex-wrap items-center gap-4">
                     <Boton type="submit" nivel="secundario" tamano="lg" disabled={estado === 'enviando'} flecha={estado !== 'enviando'}>
                       {estado === 'enviando' ? t(f.enviando) : t(f.enviar)}
                     </Boton>
                     <p className="max-w-[40ch] text-[14px] text-texto-2">{t(f.bajo)}</p>
                   </div>
-                  <Pendiente className="mt-3">destino del formulario (webhook de GHL o correo): lo conecta Derick en lib/formulario.ts.</Pendiente>
                 </motion.form>
               )}
             </AnimatePresence>

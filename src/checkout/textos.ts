@@ -41,6 +41,7 @@ export const tx = {
   privacidadLink: T('privacy policy', 'política de privacidad'),
   enviando: T('Sending…', 'Enviando…'),
   errorRed: T('Something went wrong on our side. No charge was made. Please try again.', 'Algo falló de nuestro lado. No se hizo ningún cargo. Vuelve a intentarlo.'),
+  errorEnvio: T('We could not send your request. Your details are saved here: try again, or write to us on WhatsApp.', 'No hemos podido enviar tu solicitud. Tus datos siguen aquí: inténtalo de nuevo o escríbenos por WhatsApp.'),
   noDisponible: T('That date is not available. Pick another one, your details are saved.', 'Esa fecha no está disponible. Elige otra, tus datos se guardan.'),
 
   // Solicitud (privado/corporativo mientras no haya precio)

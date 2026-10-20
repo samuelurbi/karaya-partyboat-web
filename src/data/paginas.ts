@@ -285,6 +285,9 @@ export const contacto = {
     enviadoTitulo: T('Message sent. Talk soon!', '¡Mensaje enviado! Hablamos pronto.'),
     enviadoTexto: T('We will get back to you by the channel you gave us.', 'Te responderemos por el canal que nos diste.'),
     otro: T('Send another message', 'Enviar otro mensaje'),
+    privacidad: T('By sending this message you agree to our {privacy}.', 'Al enviar este mensaje aceptas nuestra {privacy}.'),
+    privacidadLink: T('privacy policy', 'política de privacidad'),
+    errorEnvio: T('We could not send your message. Please try again, or write to us on WhatsApp.', 'No hemos podido enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.'),
   },
   // Opciones fijas del campo «Occasion». Es LA métrica del reposicionamiento (ejecutivo, tarea 11:
   // qué % de leads deja de ser de boda), así que Boda tiene que ser una opción. No es texto libre.
