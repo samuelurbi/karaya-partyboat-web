@@ -112,15 +112,15 @@ export function H01Hero() {
       </div>
 
       {/* 22/10: acceso discreto para agencias de viaje, bajo el buscador y alineado con su borde derecho. */}
-      <motion.div initial={quieto ? false : { opacity: 0 }} animate={quieto || arrancar ? { opacity: 1 } : { opacity: 0 }} transition={{ duration: 0.7, delay: 1.1 }} className="contenedor flex justify-center pt-2">
+      <motion.div initial={quieto ? false : { opacity: 0 }} animate={quieto || arrancar ? { opacity: 1 } : { opacity: 0 }} transition={{ duration: 0.7, delay: 1.1 }} className="contenedor flex justify-center pb-1 pt-3">
         <a
           href="https://karayatravelagents.com/"
           target="_blank"
           rel="noopener"
           onClick={() => emitir('click_travel_agents', { origen: 'home-hero' })}
-          className="inline-flex min-h-[44px] items-center text-[13px] text-texto/60 underline decoration-texto/30 decoration-1 underline-offset-4 transition-colors hover:text-texto/90 hover:decoration-texto/60 focus-visible:text-texto"
+          className="hoja-sm inline-flex min-h-[44px] items-center justify-center gap-2 border border-texto/45 bg-fondo/40 px-5 text-[14px] font-semibold text-texto/90 transition-colors duration-200 hover:border-texto/70 hover:bg-texto/10 hover:text-texto focus-visible:bg-texto/10"
         >
-          Travel agents only <span aria-hidden className="ml-1">→</span>
+          Travel agents only <span aria-hidden>→</span>
         </a>
       </motion.div>
     </section>
