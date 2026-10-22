@@ -23,6 +23,7 @@ export type Evento =
   | 'booking_request' // productos en modo «solicitud»
   | 'checkout_error'
   | 'click_whatsapp_help'
+  | 'click_travel_agents' // enlace «Travel agents only» bajo el buscador (salida a karayatravelagents.com)
   | 'click_traffic_light_checkout' // salida al checkout de la web de Traffic Light (docs/09)
   // 15/10 (bloque «Event rewards» B2): nombres que pide marketing para su contenedor de Tag Manager.
   | 'incentivos_vista' // el bloque asoma (una vez)

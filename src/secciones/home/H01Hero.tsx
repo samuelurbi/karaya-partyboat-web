@@ -6,6 +6,7 @@ import { barcoYaLlego, EVENTO_BARCO_LLEGA, OceanoHero } from './OceanoHero';
 import { usePreloader } from '@/lib/preloader';
 import { home } from '@/data/contenido';
 import { useIdioma } from '@/lib/idioma';
+import { emitir } from '@/lib/analitica';
 
 const curva = [0.22, 1, 0.36, 1] as const;
 
@@ -83,7 +84,7 @@ export function H01Hero() {
     // Desde el 02/10 ocupa TODA la pantalla (el fundido al marino llega al borde inferior) y el
     // buscador va entero DENTRO, en la misma posición que tenía cuando iba a caballo: 17 px sobre
     // el borde de la pantalla en móvil y 35 px en escritorio.
-    <section id="hero" data-evento="view_page · search_availability" className="relative">
+    <section id="hero" data-evento="view_page · search_availability · click_travel_agents" className="relative">
       <div data-hero-mar className="relative isolate flex h-[100svh] min-h-[660px] flex-col justify-end overflow-hidden bg-fondo md:min-h-[700px]">
         <OceanoHero />
 
@@ -109,6 +110,19 @@ export function H01Hero() {
           <Buscador />
         </motion.div>
       </div>
+
+      {/* 22/10: acceso discreto para agencias de viaje, bajo el buscador y alineado con su borde derecho. */}
+      <motion.div initial={quieto ? false : { opacity: 0 }} animate={quieto || arrancar ? { opacity: 1 } : { opacity: 0 }} transition={{ duration: 0.7, delay: 1.1 }} className="contenedor flex justify-center pt-2">
+        <a
+          href="https://karayatravelagents.com/"
+          target="_blank"
+          rel="noopener"
+          onClick={() => emitir('click_travel_agents', { origen: 'home-hero' })}
+          className="inline-flex min-h-[44px] items-center text-[13px] text-texto/60 underline decoration-texto/30 decoration-1 underline-offset-4 transition-colors hover:text-texto/90 hover:decoration-texto/60 focus-visible:text-texto"
+        >
+          Travel agents only <span aria-hidden className="ml-1">→</span>
+        </a>
+      </motion.div>
     </section>
   );
 }
