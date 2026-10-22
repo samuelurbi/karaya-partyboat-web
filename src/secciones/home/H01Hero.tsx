@@ -111,17 +111,19 @@ export function H01Hero() {
         </motion.div>
       </div>
 
-      {/* 22/10: acceso discreto para agencias de viaje, bajo el buscador y alineado con su borde derecho. */}
-      <motion.div initial={quieto ? false : { opacity: 0 }} animate={quieto || arrancar ? { opacity: 1 } : { opacity: 0 }} transition={{ duration: 0.7, delay: 1.1 }} className="contenedor flex justify-center pb-1 pt-3">
+      {/* 22/10: acceso discreto para agencias de viaje, bajo el buscador y con una línea fina a cada lado hasta los bordes de la caja. */}
+      <motion.div initial={quieto ? false : { opacity: 0 }} animate={quieto || arrancar ? { opacity: 1 } : { opacity: 0 }} transition={{ duration: 0.7, delay: 1.1 }} className="contenedor flex items-center gap-3 pb-1 pt-3 md:gap-5">
+        <span aria-hidden className="h-px flex-1 bg-texto/45" />
         <a
           href="https://karayatravelagents.com/"
           target="_blank"
           rel="noopener"
           onClick={() => emitir('click_travel_agents', { origen: 'home-hero' })}
-          className="hoja-sm inline-flex min-h-[44px] items-center justify-center gap-2 border border-texto/45 bg-fondo/40 px-5 text-[14px] font-semibold text-texto/90 transition-colors duration-200 hover:border-texto/70 hover:bg-texto/10 hover:text-texto focus-visible:bg-texto/10"
+          className="inline-flex shrink-0 rounded-full min-h-[44px] items-center justify-center gap-2 border border-texto/45 bg-fondo/40 px-5 text-[14px] font-semibold text-texto/90 transition-colors duration-200 hover:border-texto/70 hover:bg-texto/10 hover:text-texto focus-visible:bg-texto/10"
         >
           Travel agents only <span aria-hidden>→</span>
         </a>
+        <span aria-hidden className="h-px flex-1 bg-texto/45" />
       </motion.div>
     </section>
   );
